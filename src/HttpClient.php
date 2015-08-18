@@ -3,6 +3,8 @@
 namespace OpiloClient;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
@@ -35,18 +37,18 @@ class HttpClient
     /**
      * @param OutgoingSMS|OutgoingSMS[] $messages
      * @throws CommunicationException
-     * @return SendSMSResponse[]
+     * @return SendSMSResponse[]|SMSId[]|SendError[]
      */
     public function sendSMS($messages)
     {
         if (!is_array($messages)) {
             $messages = [$messages];
         }
-
-        $response = $this->client->post('send_sms', [
+        $request = $this->client->createRequest('POST', 'sms/send', [
             'auth' => [$this->account->getUserName(), $this->account->getPassword()],
             'json' => $this->SMSArrayToSendRequestBody($messages),
         ]);
+        $response = $this->send($request);
 
         return $this->prepareSendResponse($response);
     }
@@ -58,30 +60,29 @@ class HttpClient
      */
     public function checkInbox($minId = 0)
     {
-        $response = $this->client->get('check_inbox', [
+        $response = $this->send($this->client->createRequest('GET', 'inbox', [
             'auth' => [$this->account->getUserName(), $this->account->getPassword()],
             'query' => ['min_id' => $minId],
-        ]);
-
+        ]));
 
         return $this->prepareIncomingSMS($response);
     }
 
     /**
-     * @param string[] $opiloIds
+     * @param int|int[] $opiloIds
      * @throws CommunicationException
      * @return Response\Status[]
      */
-    public function getSMSStatus($opiloIds)
+    public function checkStatus($opiloIds)
     {
         if (!is_array($opiloIds)) {
             $opiloIds = [$opiloIds];
         }
 
-        $response = $this->client->get('get_status', [
+        $response = $this->send($this->client->createRequest('GET', 'sms/status', [
             'auth' => [$this->account->getUserName(), $this->account->getPassword()],
             'query' => ['ids' => $opiloIds],
-        ]);
+        ]));
 
         return $this->prepareStatusArray($response);
     }
@@ -92,9 +93,9 @@ class HttpClient
      */
     public function getCredit()
     {
-        $response = $this->client->get('get_credit', [
+        $response = $this->send($this->client->createRequest('GET','credit', [
             'auth' => [$this->account->getUserName(), $this->account->getPassword()],
-        ]);
+        ]));
         return $this->prepareCredit($response);
     }
 
@@ -174,7 +175,6 @@ class HttpClient
     {
         $rawResponse = $this->getRawResponseBody($response);
         return $this->makeStatusArray($rawResponse);
-
     }
 
     /**
@@ -260,5 +260,19 @@ class HttpClient
                 CommunicationException::HTTP_ERROR);
         }
         return $rawResponse;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws CommunicationException
+     */
+    protected function send(RequestInterface $request)
+    {
+        try{
+            return $this->client->send($request);
+        } catch(RequestException $e) {
+            throw new CommunicationException("RequestException", CommunicationException::HTTP_ERROR, $e);
+        }
     }
 }
