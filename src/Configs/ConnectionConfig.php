@@ -4,7 +4,7 @@ namespace OpiloClient\Configs;
 
 use GuzzleHttp\Client;
 
-class OpiloConnectionConfig
+class ConnectionConfig
 {
     /**
      * @var string Server Base URI, e.g. https://bpanel.opilo.com

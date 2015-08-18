@@ -3,7 +3,7 @@
 namespace OpiloClient\Configs;
 
 
-class OpiloAccount
+class Account
 {
     protected $userName;
     protected $password;
