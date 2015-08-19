@@ -24,6 +24,12 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         $this->client = new HttpClient(new ConnectionConfig(getenv('POILO_URL'), '2'), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
     }
 
+    public function testGetCredit()
+    {
+        $credit = $this->client->getCredit();
+        $this->assertTrue(is_numeric($credit));
+    }
+
     public function testSendSingleSMS()
     {
         $initCredit = $this->client->getCredit();

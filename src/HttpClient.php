@@ -91,7 +91,7 @@ class HttpClient
     public function getCredit()
     {
         $response = $this->send($this->client->createRequest('GET','credit', [
-            'auth' => $this->attachAuth([]),
+            'query' => $this->attachAuth([]),
         ]));
         return $this->prepareCredit($response);
     }
