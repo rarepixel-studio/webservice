@@ -209,12 +209,12 @@ class HttpClient
     protected function prepareCredit(ResponseInterface $response)
     {
         $rawResponse = $this->getRawResponseBody($response);
-
-        if (!is_numeric($rawResponse)) {
+        $array = json_decode($rawResponse, true);
+        if(! is_array($array) || ! array_key_exists('credit', $array)) {
             throw new CommunicationException("Unprocessable Response: $rawResponse",
                 CommunicationException::UNPROCESSABLE_RESPONSE);
         }
-        return $rawResponse;
+        return $array['credit'];
     }
 
     /**
