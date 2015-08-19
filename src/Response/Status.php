@@ -31,10 +31,9 @@ class Status
     const FAILED_TO_DELIVER_TO_DESTINATION = 4;
 
     /**
-     * The message is not tracked by Opilo at all.
-     * It can be that the format of the message is wrong, the request is not authorized, or the message is too old and deleted from Opilo data base.
+     * The message is dropped by Opilo while trying to send, and is refunded
      */
-    const NOT_FOUND = -1;
+    const DROPPED_AND_REFUNDED = -1;
 
     /**
      * The message was rejected while Opilo was trying to send it to operator. Operator did not charged the account for this message
@@ -46,6 +45,15 @@ class Status
      */
     const REJECTED_BY_COMMUNICATION_CO_AND_REFUNDED = -3;
 
+    /**
+     * The message was dropped while the communication co. was trying to deliver it to the target destination and operator has refunded it.
+     */
+    const REJECTED_BY_DESTINATION_AND_REFUNDED = -4;
+
+    /**
+     * No message with this id is found
+     */
+    const NOT_FOUND = -5;
     /**
      * @var int 0,1,2,3,4,-1,-2,-3 see constants defined above
      */
