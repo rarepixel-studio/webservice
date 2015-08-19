@@ -45,8 +45,7 @@ class HttpClient
             $messages = [$messages];
         }
         $request = $this->client->createRequest('POST', 'sms/send', [
-            'auth' => [$this->account->getUserName(), $this->account->getPassword()],
-            'json' => $this->SMSArrayToSendRequestBody($messages),
+            'json' => $this->attachAuth($this->SMSArrayToSendRequestBody($messages)),
         ]);
         $response = $this->send($request);
 
@@ -61,8 +60,7 @@ class HttpClient
     public function checkInbox($minId = 0)
     {
         $response = $this->send($this->client->createRequest('GET', 'inbox', [
-            'auth' => [$this->account->getUserName(), $this->account->getPassword()],
-            'query' => ['min_id' => $minId],
+            'query' => $this->attachAuth(['min_id' => $minId]),
         ]));
 
         return $this->prepareIncomingSMS($response);
@@ -80,8 +78,7 @@ class HttpClient
         }
 
         $response = $this->send($this->client->createRequest('GET', 'sms/status', [
-            'auth' => [$this->account->getUserName(), $this->account->getPassword()],
-            'query' => ['ids' => $opiloIds],
+            'query' => $this->attachAuth(['ids' => $opiloIds]),
         ]));
 
         return $this->prepareStatusArray($response);
@@ -94,7 +91,7 @@ class HttpClient
     public function getCredit()
     {
         $response = $this->send($this->client->createRequest('GET','credit', [
-            'auth' => [$this->account->getUserName(), $this->account->getPassword()],
+            'auth' => $this->attachAuth([]),
         ]));
         return $this->prepareCredit($response);
     }
@@ -274,5 +271,14 @@ class HttpClient
         } catch(RequestException $e) {
             throw new CommunicationException("RequestException", CommunicationException::HTTP_ERROR, $e);
         }
+    }
+
+    /**
+     * @param array $array
+     * @return array
+     */
+    protected function attachAuth($array)
+    {
+        return array_merge(['username' => $this->account->getUserName(), 'password' => $this->account->getPassword()], $array);
     }
 }
