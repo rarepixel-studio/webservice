@@ -41,7 +41,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $status);
         $this->assertInstanceOf(Status::class, $status[0]);
         $finalCredit = $this->client->getCredit();
-        $this->assertEquals(1, $finalCredit - $initCredit);
+        $this->assertEquals(1, $initCredit - $finalCredit);
     }
 
     public function testSendMultipleSMS()
@@ -67,7 +67,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         }
 
         $finalCredit = $this->client->getCredit();
-        $this->assertEquals(1, $finalCredit - $initCredit);
+        $this->assertEquals(10, $initCredit - $finalCredit);
     }
 
     public function testCheckInbox()
