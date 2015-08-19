@@ -29,6 +29,9 @@ class ConnectionConfig
 
     public function getHttpClient()
     {
-        return new Client(['base_url' => $this->serverBaseUrl . '/ws/api/v' . $this->apiVersion . '/']);
+        return new Client([
+            'base_url' => $this->serverBaseUrl . '/ws/api/v' . $this->apiVersion . '/',
+            'defaults' => ['exceptions' => false]
+        ]);
     }
 }

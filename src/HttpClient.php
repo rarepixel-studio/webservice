@@ -253,8 +253,7 @@ class HttpClient
         $rawResponse = $response->getBody()->getContents();
 
         if ($statusCode != 200) {
-            throw new CommunicationException("StatusCode: $statusCode, Contents: $rawResponse",
-                CommunicationException::HTTP_ERROR);
+            throw CommunicationException::createFromHTTPResponse($statusCode, $rawResponse);
         }
         return $rawResponse;
     }
@@ -269,7 +268,7 @@ class HttpClient
         try{
             return $this->client->send($request);
         } catch(RequestException $e) {
-            throw new CommunicationException("RequestException", CommunicationException::HTTP_ERROR, $e);
+            throw new CommunicationException("RequestException", CommunicationException::GENERAL_HTTP_ERROR, $e);
         }
     }
 
