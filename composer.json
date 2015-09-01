@@ -1,6 +1,7 @@
 {
     "name": "opilo/opilo-client",
-    "description": "This is a client of Opilo Web-Service",
+    "description": "This is a client of Opilo (www.opilo.com) Web Service",
+    "keywords": ["Opilo", "SMS", "Messaging", "Web Service"],
     "authors": [
         {
             "name": "Hamid Alaei",
