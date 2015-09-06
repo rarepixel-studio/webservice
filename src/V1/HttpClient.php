@@ -3,18 +3,10 @@
 namespace OpiloClient\V1;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
-use OpiloClient\Request\IncomingSMS;
-use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CommunicationException;
-use OpiloClient\Response\SendError;
-use OpiloClient\Response\SendSMSResponse;
-use OpiloClient\Response\SMSId;
-use OpiloClient\Response\Status;
 use OpiloClient\V1\Bin\Out;
 use OpiloClient\V1\Bin\Parser;
 
@@ -72,6 +64,12 @@ class HttpClient
 
     public function getCredit()
     {
+        $request = $this->client->createRequest('GET', 'getCredit', [
+            'query' => Out::attachAuth($this->account, []),
+        ]);
+        $response = Out::send($this->client, $request);
+
+        return Parser::prepareGetCreditResponse($response);
     }
 
     protected function prepareSendResponse(ResponseInterface $response)

@@ -54,4 +54,14 @@ class Parser
             }
         }
     }
+
+    /**
+     * @param ResponseInterface $response
+     * @return string
+     * @throws CommunicationException
+     */
+    public static function prepareGetCreditResponse(ResponseInterface $response)
+    {
+        return static::getRawResponseBody($response);
+    }
 }

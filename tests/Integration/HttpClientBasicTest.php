@@ -21,7 +21,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->client = new HttpClient(new ConnectionConfig(getenv('POILO_URL'), '2'), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $this->client = new HttpClient(new ConnectionConfig(getenv('POILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
     }
 
     public function testGetCredit()
