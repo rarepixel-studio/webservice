@@ -8,6 +8,10 @@ use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\SendError;
+use OpiloClient\Response\SendSMSResponse;
+use OpiloClient\Response\SMSId;
+use OpiloClient\Response\Status;
 use OpiloClient\V1\Bin\Out;
 use OpiloClient\V1\Bin\Parser;
 
@@ -33,7 +37,7 @@ class HttpClient
      * @param string $from
      * @param string|array $to
      * @param string $text
-     * @return \OpiloClient\Response\SendError[]|\OpiloClient\Response\SendSMSResponse[]|\OpiloClient\Response\SMSId[]
+     * @return SendError[]|SendSMSResponse[]|SMSId[]
      * @throws CommunicationException
      */
     public function sendSMS($from, $to, $text)
@@ -52,15 +56,29 @@ class HttpClient
         );
         $response = Out::send($this->client, $request);
 
-        return $this->prepareSendResponse($response);
+        return Parser::prepareSendResponse($response);
     }
 
     public function checkInbox($minId = 0)
     {
     }
 
+    /**
+     * @param int|int[] $opiloIds
+     * @return Status[]
+     */
     public function checkStatus($opiloIds)
     {
+        if(! is_array($opiloIds)) {
+            $opiloIds = [$opiloIds];
+        }
+        $request = $this->client->createRequest('GET', 'getStatus', [
+                'query' => Out::attachAuth($this->account, [
+                    'ids' => $opiloIds,
+                ])]);
+        $response = Out::send($this->client, $request);
+
+        return Parser::prepareStatusArray($opiloIds, $response);
     }
 
     /**
@@ -75,10 +93,5 @@ class HttpClient
         $response = Out::send($this->client, $request);
 
         return Parser::prepareCredit($response);
-    }
-
-    protected function prepareSendResponse(ResponseInterface $response)
-    {
-        return Parser::getRawResponseBody($response);
     }
 }
