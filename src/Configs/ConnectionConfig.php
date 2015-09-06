@@ -6,32 +6,40 @@ use GuzzleHttp\Client;
 
 class ConnectionConfig
 {
+    const VERSION_1 = '1';
+    const VERSION_2 = '2';
     /**
      * @var string Server Base URI, e.g. https://bpanel.opilo.com
      */
     protected $serverBaseUrl;
 
     /**
-     * @var string API version.
-     */
-    protected $apiVersion;
-
-    /**
      * OpiloConnectionConfig constructor
      * @param string $serverBaseUrl
-     * @param string $apiVersion
      */
-    public function __construct($serverBaseUrl, $apiVersion = '2')
+    public function __construct($serverBaseUrl)
     {
         $this->serverBaseUrl = $serverBaseUrl;
-        $this->apiVersion = $apiVersion;
     }
 
-    public function getHttpClient()
+    public function getHttpClient($apiVersion = self::VERSION_2)
     {
         return new Client([
-            'base_url' => $this->serverBaseUrl . '/ws/api/v' . $this->apiVersion . '/',
+            'base_url' => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
             'defaults' => ['exceptions' => false]
         ]);
+    }
+
+    /**
+     * @param $apiVersion
+     * @return string
+     */
+    protected function getVersionSegment($apiVersion)
+    {
+        if($apiVersion == self::VERSION_1) {
+            return '/WS/';
+        }
+
+        return ('/ws/api/v' . $apiVersion . '/');
     }
 }

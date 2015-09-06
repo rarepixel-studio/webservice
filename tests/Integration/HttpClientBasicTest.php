@@ -4,11 +4,11 @@ namespace OpiloClientTest\Integration;
 
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
-use OpiloClient\HttpClient;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
+use OpiloClient\V2\HttpClient;
 use PHPUnit_Framework_TestCase;
 
 class HttpClientTest extends PHPUnit_Framework_TestCase
