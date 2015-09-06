@@ -4,6 +4,7 @@ namespace OpiloClientTest\Integration;
 
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
+use OpiloClient\Response\Credit;
 use OpiloClient\V1\HttpClient;
 use PHPUnit_Framework_TestCase;
 
@@ -23,6 +24,7 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
     public function testGetCredit()
     {
         $credit = $this->client->getCredit();
-        $this->assertTrue(is_numeric($credit));
+        $this->assertInstanceOf(Credit::class, $credit);
+        $this->assertTrue(is_numeric($credit->getSmsPageCount()));
     }
 }

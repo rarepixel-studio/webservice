@@ -8,6 +8,7 @@ use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CommunicationException;
+use OpiloClient\Response\Credit;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
@@ -85,7 +86,7 @@ class HttpClient
 
     /**
      * @throws CommunicationException
-     * @return string
+     * @return Credit
      */
     public function getCredit()
     {

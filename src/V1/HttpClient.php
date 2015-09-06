@@ -7,6 +7,7 @@ use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
+use OpiloClient\Response\Credit;
 use OpiloClient\V1\Bin\Out;
 use OpiloClient\V1\Bin\Parser;
 
@@ -62,6 +63,10 @@ class HttpClient
     {
     }
 
+    /**
+     * @return Credit
+     * @throws CommunicationException
+     */
     public function getCredit()
     {
         $request = $this->client->createRequest('GET', 'getCredit', [
@@ -69,7 +74,7 @@ class HttpClient
         ]);
         $response = Out::send($this->client, $request);
 
-        return Parser::prepareGetCreditResponse($response);
+        return Parser::prepareCredit($response);
     }
 
     protected function prepareSendResponse(ResponseInterface $response)

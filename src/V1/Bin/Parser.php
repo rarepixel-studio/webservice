@@ -4,6 +4,7 @@ namespace OpiloClient\V1\Bin;
 
 use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Response\CommunicationException;
+use OpiloClient\Response\Credit;
 
 class Parser
 {
@@ -57,11 +58,11 @@ class Parser
 
     /**
      * @param ResponseInterface $response
-     * @return string
+     * @return Credit
      * @throws CommunicationException
      */
-    public static function prepareGetCreditResponse(ResponseInterface $response)
+    public static function prepareCredit(ResponseInterface $response)
     {
-        return static::getRawResponseBody($response);
+        return new Credit(static::getRawResponseBody($response));
     }
 }

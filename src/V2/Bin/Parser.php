@@ -5,6 +5,7 @@ namespace OpiloClient\V2\Bin;
 use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\CommunicationException;
+use OpiloClient\Response\Credit;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
@@ -32,17 +33,17 @@ class Parser
      * @param ResponseInterface $response
      * @return Status[]
      * @throws CommunicationException
-     * @return string
+     * @return Credit
      */
     public static function prepareCredit(ResponseInterface $response)
     {
         $rawResponse = static::getRawResponseBody($response);
         $array = json_decode($rawResponse, true);
-        if(! is_array($array) || ! array_key_exists('credit', $array)) {
+        if(! is_array($array) || ! array_key_exists('sms_page_count', $array)) {
             throw new CommunicationException("Unprocessable Response: $rawResponse",
                 CommunicationException::UNPROCESSABLE_RESPONSE);
         }
-        return $array['credit'];
+        return new Credit($array['sms_page_count']);
     }
 
     /**

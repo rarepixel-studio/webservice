@@ -6,6 +6,7 @@ use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
+use OpiloClient\Response\Credit;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
 use OpiloClient\V2\HttpClient;
@@ -27,12 +28,13 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
     public function testGetCredit()
     {
         $credit = $this->client->getCredit();
-        $this->assertTrue(is_numeric($credit));
+        $this->assertInstanceOf(Credit::class, $credit);
+        $this->assertTrue(is_numeric($credit->getSmsPageCount()));
     }
 
     public function testSendSingleSMS()
     {
-        $initCredit = $this->client->getCredit();
+        $initCredit = $this->client->getCredit()->getSmsPageCount();
         $message = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), __CLASS__ . '::' . __FUNCTION__ . '()', null);
         $response = $this->client->sendSMS($message);
         $this->assertCount(1, $response);
@@ -40,13 +42,13 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         $status = $this->client->checkStatus($response[0]->getId());
         $this->assertCount(1, $status);
         $this->assertInstanceOf(Status::class, $status[0]);
-        $finalCredit = $this->client->getCredit();
+        $finalCredit = $this->client->getCredit()->getSmsPageCount();
         $this->assertEquals(1, $initCredit - $finalCredit);
     }
 
     public function testSendMultipleSMS()
     {
-        $initCredit = $this->client->getCredit();
+        $initCredit = $this->client->getCredit()->getSmsPageCount();
         $messages = [];
         for($i = 0; $i < 10; $i++) {
             $messages[] = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), __CLASS__ . '::' . __FUNCTION__ . "($i)" , $i);
@@ -66,7 +68,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
             $this->assertInstanceOf(Status::class, $stat);
         }
 
-        $finalCredit = $this->client->getCredit();
+        $finalCredit = $this->client->getCredit()->getSmsPageCount();
         $this->assertEquals(10, $initCredit - $finalCredit);
     }
 
