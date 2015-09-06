@@ -4,6 +4,7 @@ namespace OpiloClient\V2\Bin;
 
 use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Request\IncomingSMS;
+use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
 use OpiloClient\Response\SendError;
@@ -79,10 +80,12 @@ class Parser
     protected static function makeStatusArray($rawResponse)
     {
         $array = json_decode($rawResponse, true);
-        if (is_null($array) || !is_array($array)) {
+        if (is_null($array) || !is_array($array) || !array_key_exists('status_array', $array)) {
             throw new CommunicationException("Unprocessable Response: $rawResponse",
                 CommunicationException::UNPROCESSABLE_RESPONSE);
         }
+
+        $array = $array['status_array'];
 
         $prepared = [];
 
@@ -94,7 +97,7 @@ class Parser
             $prepared[] = new Status((int)$item);
         }
 
-        return $prepared;
+        return new CheckStatusResponse($prepared);
     }
 
     /**

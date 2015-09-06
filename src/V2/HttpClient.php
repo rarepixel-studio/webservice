@@ -7,6 +7,7 @@ use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
+use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
 use OpiloClient\Response\SendError;
@@ -69,7 +70,7 @@ class HttpClient
     /**
      * @param int|int[] $opiloIds
      * @throws CommunicationException
-     * @return Status[]
+     * @return CheckStatusResponse
      */
     public function checkStatus($opiloIds)
     {

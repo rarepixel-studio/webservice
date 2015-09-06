@@ -6,6 +6,7 @@ use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
+use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\Credit;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
@@ -40,6 +41,8 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $response);
         $this->assertInstanceOf(SMSId::class, $response[0]);
         $status = $this->client->checkStatus($response[0]->getId());
+        $this->assertInstanceOf(CheckStatusResponse::class, $status);
+        $status = $status->getStatusArray();
         $this->assertCount(1, $status);
         $this->assertInstanceOf(Status::class, $status[0]);
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
@@ -63,6 +66,8 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         }
 
         $status = $this->client->checkStatus($ids);
+        $this->assertInstanceOf(CheckStatusResponse::class, $status);
+        $status = $status->getStatusArray();
         $this->assertCount(10, $status);
         foreach ($status as $stat) {
             $this->assertInstanceOf(Status::class, $stat);

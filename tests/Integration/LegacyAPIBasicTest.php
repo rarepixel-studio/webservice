@@ -4,7 +4,6 @@ namespace OpiloClientTest\Integration;
 
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
-use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\Credit;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
