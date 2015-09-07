@@ -9,6 +9,10 @@ class Inbox
 {
     const PAGE_LIMIT = 90;
 
+    const INBOX_READ = 'read';
+    const INBOX_NOT_READ = 'not_read';
+    const INBOX_ALL = 'all';
+
     /**
      * @var IncomingSMS[]
      */

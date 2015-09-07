@@ -2,6 +2,7 @@
 
 namespace OpiloClient\V2;
 
+use DateTime;
 use GuzzleHttp\Client;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
@@ -56,13 +57,39 @@ class HttpClient
 
     /**
      * @param int $minId
-     * @throws CommunicationException
+     * @param DateTime|string|null $minReceivedAt
+     * @param string $read
+     * @see Inbox::INBOX_ALL, Inbox::INBOX_READ, Inbox::INBOX_NOT_READ
+     * @param string|null $line_number
      * @return Inbox
+     * @throws CommunicationException
      */
-    public function checkInbox($minId = 0)
+    public function checkInbox($minId = 0, $minReceivedAt = null, $read = Inbox::INBOX_ALL, $line_number = null)
     {
+        $query = [];
+
+        if($minId) {
+            $query['min_id'] = $minId;
+        }
+
+        if($minReceivedAt) {
+            if($minReceivedAt instanceof DateTime) {
+                $query['min_received_at'] = $minReceivedAt->format('Y-m-d H:i:s');
+            } else {
+                $query['min_received_at'] = $minReceivedAt;
+            }
+        }
+
+        if($read != Inbox::INBOX_ALL) {
+            $query['read'] = $read;
+        }
+
+        if($line_number) {
+            $query['line_number'] = $line_number;
+        }
+
         $response = Out::send($this->client, $this->client->createRequest('GET', 'inbox', [
-            'query' => Out::attachAuth($this->account, ['min_id' => $minId]),
+            'query' => Out::attachAuth($this->account, $query),
         ]));
 
         return Parser::prepareIncomingSMS($response);

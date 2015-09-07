@@ -61,21 +61,21 @@ class HttpClient
 
     /**
      * @param int $fromId
-     * @param null $fromDate
+     * @param string|null $fromDate
      * @param int $read
-     * @param null $number
+     * @param string|null $number
      * @param int $count
      * @return Inbox
      * @throws CommunicationException
      */
-    public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = 90)
+    public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = Inbox::PAGE_LIMIT)
     {
         $query = [];
         if($fromId) {
             $query['from_id'] = $fromId;
         }
         if($fromDate) {
-            $query['from+date'] = $fromDate;
+            $query['from_date'] = $fromDate;
         }
         if($read) {
             $query['read'] = 1;
