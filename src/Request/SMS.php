@@ -6,12 +6,12 @@ namespace OpiloClient\Request;
 abstract class SMS
 {
     /**
-     * @var string Sender Line Number
+     * @var string Sender Number
      */
     protected $from;
 
     /**
-     * @var string Reciver Mobile Number
+     * @var string Receiver Number
      */
     protected $to;
 

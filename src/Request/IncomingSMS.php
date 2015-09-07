@@ -9,7 +9,7 @@ class IncomingSMS extends SMS
     /**
      * @var DateTime
      */
-    protected $timestamp;
+    protected $receivedAt;
 
     /**
      * @var int
@@ -22,21 +22,21 @@ class IncomingSMS extends SMS
      * @param string $from
      * @param string $to
      * @param string $text
-     * @param DateTime $timestamp
+     * @param DateTime $receivedAt
      */
-    public function __construct($opiloId, $from, $to, $text, DateTime $timestamp)
+    public function __construct($opiloId, $from, $to, $text, DateTime $receivedAt)
     {
         parent::__construct($from, $to, $text);
-        $this->timestamp = $timestamp;
+        $this->receivedAt = $receivedAt;
         $this->opiloId = $opiloId;
     }
 
     /**
      * @return DateTime
      */
-    public function getTimestamp()
+    public function getReceivedAt()
     {
-        return $this->timestamp;
+        return $this->receivedAt;
     }
 
     /**

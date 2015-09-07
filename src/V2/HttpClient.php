@@ -6,7 +6,6 @@ use DateTime;
 use GuzzleHttp\Client;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
-use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\CommunicationException;
@@ -15,7 +14,6 @@ use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
-use OpiloClient\Response\Status;
 use OpiloClient\V2\Bin\Parser;
 use OpiloClient\V2\Bin\Out;
 
