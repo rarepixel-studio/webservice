@@ -3,11 +3,11 @@
 namespace OpiloClient\V1;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
@@ -59,8 +59,39 @@ class HttpClient
         return Parser::prepareSendResponse($response);
     }
 
-    public function checkInbox($minId = 0)
+    /**
+     * @param int $fromId
+     * @param null $fromDate
+     * @param int $read
+     * @param null $number
+     * @param int $count
+     * @return Inbox
+     * @throws CommunicationException
+     */
+    public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = 90)
     {
+        $query = [];
+        if($fromId) {
+            $query['from_id'] = $fromId;
+        }
+        if($fromDate) {
+            $query['from+date'] = $fromDate;
+        }
+        if($read) {
+            $query['read'] = 1;
+        }
+        if($number) {
+            $query['number'] = $number;
+        }
+        if($count) {
+            $query[$count] = $count;
+        }
+        $request = $this->client->createRequest('GET', 'getAllMessages', [
+            'query' => Out::attachAuth($this->account, $query),
+        ]);
+        $response = Out::send($this->client, $request);
+
+        return Parser::prepareInbox($response);
     }
 
     /**

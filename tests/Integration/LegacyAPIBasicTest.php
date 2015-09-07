@@ -4,7 +4,9 @@ namespace OpiloClientTest\Integration;
 
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
+use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
 use OpiloClient\V1\HttpClient;
@@ -68,5 +70,17 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
 
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
         $this->assertEquals(10, $initCredit - $finalCredit);
+    }
+
+    public function testCheckInbox()
+    {
+        $response = $this->client->checkInbox(0);
+        $this->assertInstanceOf(Inbox::class, $response);
+        $response = $response->getMessages();
+        $this->assertTrue(is_array($response));
+        $this->assertLessThanOrEqual(Inbox::PAGE_LIMIT, count($response));
+        foreach ($response as $sms) {
+            $this->assertInstanceOf(IncomingSMS::class, $sms);
+        }
     }
 }

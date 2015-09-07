@@ -10,6 +10,7 @@ use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
@@ -56,7 +57,7 @@ class HttpClient
     /**
      * @param int $minId
      * @throws CommunicationException
-     * @return IncomingSMS[] an array of maximum 50 messages with id >= minId
+     * @return Inbox
      */
     public function checkInbox($minId = 0)
     {

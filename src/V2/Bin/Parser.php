@@ -7,6 +7,7 @@ use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
@@ -49,8 +50,8 @@ class Parser
 
     /**
      * @param ResponseInterface $response
+     * @return Inbox
      * @throws CommunicationException
-     * @return IncomingSMS[]
      */
     public static function prepareIncomingSMS(ResponseInterface $response)
     {
@@ -71,7 +72,7 @@ class Parser
                 \DateTime::createFromFormat('Y-m-d H:i:s', $item['time']));
         }
 
-        return $prepared;
+        return new Inbox($prepared);
     }
 
     /**

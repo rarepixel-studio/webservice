@@ -3,8 +3,10 @@
 namespace OpiloClient\V1\Bin;
 
 use GuzzleHttp\Message\ResponseInterface;
+use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
@@ -141,5 +143,30 @@ class Parser
         }
 
         return array_values($output);
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return Inbox
+     * @throws CommunicationException
+     */
+    public static function prepareInbox(ResponseInterface $response)
+    {
+        $body = static::getRawResponseBody($response);
+
+        $decoded = json_decode($body, true);
+        if(! is_array($decoded)) {
+            throw new CommunicationException("Unprocessable Response: $body", CommunicationException::UNPROCESSABLE_RESPONSE);
+        }
+
+        $output = [];
+        foreach ($decoded as $sms) {
+            if(!is_array($sms) || ! array_key_exists('id', $sms) || ! array_key_exists('from', $sms) || ! array_key_exists('to', $sms) || ! array_key_exists('date', $sms)) {
+                throw new CommunicationException("Unprocessable Response item: $body", CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
+            }
+            $output[] = new IncomingSMS($sms['id'], $sms['from'], $sms['to'], $sms['text'], \DateTime::createFromFormat('Y-m-d H:i:s', $sms['date']));
+        }
+
+        return new Inbox($output);
     }
 }

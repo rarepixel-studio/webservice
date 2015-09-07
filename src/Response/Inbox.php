@@ -7,6 +7,7 @@ use OpiloClient\Request\IncomingSMS;
 
 class Inbox
 {
+    const PAGE_LIMIT = 90;
 
     /**
      * @var IncomingSMS[]
@@ -20,6 +21,14 @@ class Inbox
     public function __construct(array $messages)
     {
         $this->messages = $messages;
+    }
+
+    /**
+     * @return \OpiloClient\Request\IncomingSMS[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 
 }
