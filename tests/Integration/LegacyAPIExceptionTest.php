@@ -24,10 +24,17 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
         $client->sendSMS('3000', '9130000000', 'text');
     }
 
-    public function test422()
+    public function test422InvalidFrom()
     {
-        $this->setExpectedException(CommunicationException::class, 'Input Validation Failed', CommunicationException::INVALID_INPUT);
+        $this->setExpectedException(CommunicationException::class, 'Invalid From', CommunicationException::INVALID_INPUT);
         $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
         $client->sendSMS('asdf', '9130000000', 'text');
+    }
+
+    public function test422InvalidTo()
+    {
+        $this->setExpectedException(CommunicationException::class, 'Invalid To', CommunicationException::INVALID_INPUT);
+        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client->sendSMS('3000', '9130000000,912', 'text');
     }
 }

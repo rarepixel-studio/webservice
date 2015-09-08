@@ -21,7 +21,7 @@ class CommunicationException extends Exception
             case '403':
                 return new static('Forbidden [Web-service is disabled]', static::FORBIDDEN);
             case '422':
-                return new static('Input Validation Failed', static::INVALID_INPUT);
+                return new ValidationException($bodyContents);
             default:
                 return new static("StatusCode: $statusCode, Contents: $bodyContents", static::GENERAL_HTTP_ERROR);
         }

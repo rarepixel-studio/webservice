@@ -5,6 +5,7 @@ namespace OpiloClientTest\Integration;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
+use OpiloClient\Response\ValidationException;
 use OpiloClient\V2\HttpClient;
 use PHPUnit_Framework_TestCase;
 
@@ -26,15 +27,23 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
 
     public function test422()
     {
-        $account = new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'));
-        $config = new ConnectionConfig(getenv('OPILO_URL'));
-        $client = $config->getHttpClient();
-        $response = $client->get('sms/status', [
-            'query' => [
-                'ids' => ['abcd'],
-                'username' => $account->getUserName(),
-                'password' => $account->getPassword()]
-        ]);
-        $this->assertEquals('422',$response->getStatusCode());
+        $this->setExpectedException(ValidationException::class, 'Input Validation Failed', CommunicationException::INVALID_INPUT);
+        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client->checkStatus(['string']);
+    }
+
+    public function test422Errors()
+    {
+        $failed = false;
+        try {
+            $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+            $client->checkStatus(['string']);
+        } catch(ValidationException $e) {
+            $failed = true;
+            $errors = $e->getErrors();
+            $this->assertCount(1, $errors);
+            $this->assertArrayHasKey('Integer', $errors['ids.0']);
+        }
+        $this->assertTrue($failed);
     }
 }

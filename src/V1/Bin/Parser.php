@@ -63,7 +63,7 @@ class Parser
         if(is_numeric($rawResponse)) {
             switch($rawResponse) {
                 case static::VALIDATION_FAILED:
-                    throw CommunicationException::createFromHTTPResponse('422', '');
+                    throw new CommunicationException('Input Validation Failed', CommunicationException::INVALID_INPUT);
                 case static::AUTHENTICATION_FAILED:
                     throw CommunicationException::createFromHTTPResponse('401', '');
                 case static::PANEL_AUTHORIZATION_FAILED:
