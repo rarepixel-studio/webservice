@@ -110,4 +110,12 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
             $this->assertInstanceOf(IncomingSMS::class, $sms);
         }
     }
+
+    public function testReceive()
+    {
+        $firstResponse = $this->client->receive(0, Inbox::PAGE_LIMIT)->getMessages();
+        $this->assertGreaterThan($firstResponse[1]->getOpiloId(), $firstResponse[0]->getOpiloId());
+        $secondResponse = $this->client->receive(1, Inbox::PAGE_LIMIT)->getMessages();
+        $this->assertEquals($firstResponse[1]->getOpiloId(), $secondResponse[0]->getOpiloId());
+    }
 }

@@ -95,6 +95,28 @@ class HttpClient
     }
 
     /**
+     * @param int $from offset from
+     * @param int $count
+     * @deprecated
+     * @return Inbox
+     */
+    public function receive($from = 0, $count = Inbox::PAGE_LIMIT)
+    {
+        $query = [];
+        if($from) {
+            $query['from'] = $from;
+        }
+        if($count) {
+            $query['count'] = $count;
+        }
+        $request = $this->client->createRequest('GET', 'recieve', [
+            'query' => Out::attachAuth($this->account, $query),
+        ]);
+        $response = Out::send($this->client, $request);
+
+        return Parser::prepareInbox($response);
+    }
+    /**
      * @param int|int[] $opiloIds
      * @return Status[]
      */
