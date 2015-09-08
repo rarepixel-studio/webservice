@@ -86,7 +86,22 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
 
     public function testCheckInboxFromDate()
     {
-        $response = $this->client->checkInbox(0, '2015-08-02');
+        $response = $this->client->checkInbox(0, '2015-08-02', 1);
+        $this->assertInstanceOf(Inbox::class, $response);
+        $response = $response->getMessages();
+        $this->assertTrue(is_array($response));
+        $this->assertLessThanOrEqual(Inbox::PAGE_LIMIT, count($response));
+        foreach ($response as $sms) {
+            $this->assertInstanceOf(IncomingSMS::class, $sms);
+        }
+    }
+
+    public function testCheckInboxIgnoresBadFromDate()
+    {
+        $firstResponse = $this->client->checkInbox(0, null, 1);
+
+        $response = $this->client->checkInbox(0, 'bad date', 1);
+        $this->assertCount(count($firstResponse->getMessages()), $response->getMessages());
         $this->assertInstanceOf(Inbox::class, $response);
         $response = $response->getMessages();
         $this->assertTrue(is_array($response));
