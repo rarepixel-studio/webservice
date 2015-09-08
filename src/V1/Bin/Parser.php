@@ -23,8 +23,6 @@ class Parser
     const INSUFFICIENT_CREDIT = 7;
     const INTERNAL_SERVER_ERROR = 8;
 
-
-
     const STATUS_QUEUED = 0;
     const STATUS_DELIVERED_TO_DESTINATION = 1;
     const STATUS_FAILED_TO_DELIVER_TO_DESTINATION = 2;
@@ -160,13 +158,14 @@ class Parser
         }
 
         $output = [];
-        foreach ($decoded as $sms) {
-            if(!is_array($sms) || ! array_key_exists('id', $sms) || ! array_key_exists('from', $sms) || ! array_key_exists('to', $sms) || ! array_key_exists('date', $sms)) {
-                throw new CommunicationException("Unprocessable Response item: $body", CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
+        if($decoded !== [[]]) {
+            foreach ($decoded as $sms) {
+                if(!is_array($sms) || ! array_key_exists('id', $sms) || ! array_key_exists('from', $sms) || ! array_key_exists('to', $sms) || ! array_key_exists('date', $sms)) {
+                    throw new CommunicationException("Unprocessable Response item: $body", CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
+                }
+                $output[] = new IncomingSMS($sms['id'], $sms['from'], $sms['to'], $sms['text'], \DateTime::createFromFormat('Y-m-d H:i:s', $sms['date']));
             }
-            $output[] = new IncomingSMS($sms['id'], $sms['from'], $sms['to'], $sms['text'], \DateTime::createFromFormat('Y-m-d H:i:s', $sms['date']));
         }
-
         return new Inbox($output);
     }
 }

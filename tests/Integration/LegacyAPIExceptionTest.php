@@ -35,6 +35,6 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
     {
         $this->setExpectedException(CommunicationException::class, 'Invalid To', CommunicationException::INVALID_INPUT);
         $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
-        $client->sendSMS('3000', '9130000000,912', 'text');
+        $client->sendSMS(getenv('PANEL_LINE'), 'junk', 'text');
     }
 }
