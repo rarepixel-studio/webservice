@@ -100,7 +100,7 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
     {
         $firstResponse = $this->client->checkInbox(0, null, 1);
 
-        $response = $this->client->checkInbox(0, 'bad date', 1);
+        $response = $this->client->checkInbox(0, '20', 1);
         $this->assertCount(count($firstResponse->getMessages()), $response->getMessages());
         $this->assertInstanceOf(Inbox::class, $response);
         $response = $response->getMessages();
