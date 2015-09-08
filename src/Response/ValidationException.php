@@ -12,7 +12,7 @@ class ValidationException extends CommunicationException
     /**
      * @var array
      */
-    protected $errors;
+    protected $errors = [];
 
     public function __construct($httpResponseBody)
     {
