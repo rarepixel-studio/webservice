@@ -139,11 +139,11 @@ class Parser
     protected static function makeSendResponseArray($rawResponse)
     {
         $array = json_decode($rawResponse, true);
-        if (is_null($array) || !is_array($array)) {
+        if (is_null($array) || !is_array($array) || !array_key_exists('messages', $array) || !is_array($array['messages'])) {
             throw new CommunicationException("Unprocessable Response: $rawResponse",
                 CommunicationException::UNPROCESSABLE_RESPONSE);
         }
-
+        $array = $array['messages'];
         $prepared = [];
 
         foreach ($array as $item) {
