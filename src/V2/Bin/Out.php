@@ -44,18 +44,36 @@ class Out
     public static function SMSArrayToSendRequestBody($messages)
     {
         $array = [
-            'from' => [],
-            'to' => [],
-            'text' => [],
-            'user_defined_id' => [],
+            'messages' => [],
         ];
 
+        $first = true;
         foreach ($messages as $message) {
-            $array['from'][] = $message->getFrom();
-            $array['to'][] = $message->getTo();
-            $array['text'][] = $message->getText();
-            $array['id'][] = $message->getUserDefinedId();
+
+            if($first) {
+                $first = false;
+                $array['defaults'] = [
+                    'from' => $message->getFrom(),
+                    'text' => $message->getText(),
+                ];
+            }
+
+            $msg = [
+                'to' => $message->getTo(),
+                'id' => $message->getUserDefinedId(),
+            ];
+
+            if ($array['defaults']['from'] != $message->getFrom()) {
+                $msg['from'] = $message->getFrom();
+            }
+
+            if ($array['defaults']['text'] != $message->getText()) {
+                $msg['text'] = $message->getText();
+            }
+
+            $array['messages'][] = $msg;
         }
+
         return $array;
     }
 }
