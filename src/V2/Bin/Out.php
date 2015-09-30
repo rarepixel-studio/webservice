@@ -56,6 +56,9 @@ class Out
                     'from' => $message->getFrom(),
                     'text' => $message->getText(),
                 ];
+                if($message->getSendAt()) {
+                    $array['defaults']['send_at'] = $message->formatSendAt();
+                }
             }
 
             $msg = [
@@ -71,9 +74,14 @@ class Out
                 $msg['text'] = $message->getText();
             }
 
+            if ($message->getSendAt() &&
+                (!array_key_exists('send_at', $array['defaults']) ||
+                    $array['defaults']['send_at'] != $message->formatSendAt())) {
+                $msg['send_at'] = $message->formatSendAt();
+            }
+
             $array['messages'][] = $msg;
         }
-
         return $array;
     }
 }
