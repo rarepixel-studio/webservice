@@ -1,5 +1,5 @@
 {
-    "name": "opilo/opilo-client",
+    "name": "opilo/Webservice",
     "description": "This is a client of Opilo (www.opilo.com) Web Service",
     "keywords": ["Opilo", "SMS", "Messaging", "Web Service"],
     "authors": [
