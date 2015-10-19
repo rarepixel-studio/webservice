@@ -12,6 +12,7 @@ class CommunicationException extends Exception
     const FORBIDDEN = 4;
     const UNPROCESSABLE_RESPONSE = 10;
     const UNPROCESSABLE_RESPONSE_ITEM = 11;
+    const DOWN_FOR_MAINTENANCE = 12;
 
     public static function createFromHTTPResponse($statusCode, $bodyContents)
     {
@@ -20,6 +21,8 @@ class CommunicationException extends Exception
                 return new static('Authentication Failed', static::AUTH_ERROR);
             case '403':
                 return new static('Forbidden [Web-service is disabled]', static::FORBIDDEN);
+            case '503':
+                return new static('Server is down for maintenance. Retry after a few seconds', static::DOWN_FOR_MAINTENANCE);
             case '422':
                 return new ValidationException($bodyContents);
             default:
