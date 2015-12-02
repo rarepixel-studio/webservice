@@ -35,7 +35,7 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
     public function testSendSingleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
-        $text = __CLASS__ . '::' . __FUNCTION__ . '()';
+        $text = 'Legacy::testSendSingleSMS()';
         $response = $this->client->sendSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), $text);
         $this->assertCount(1, $response);
         $this->assertInstanceOf(SMSId::class, $response[0]);
@@ -43,14 +43,14 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $status);
         $this->assertInstanceOf(Status::class, $status[0]);
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
-        $this->assertEquals(1, $initCredit - $finalCredit);
+        $this->assertLessThanOrEqual(1, $initCredit - $finalCredit);
     }
 
     public function testSendMultipleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
         $to = [];
-        $text = __CLASS__ . '::' . __FUNCTION__ . '()';
+        $text = 'legacy::testSendMultipleSMS()';
         for($i = 0; $i < 10; $i++) {
             $to[] = getenv('DESTINATION');
         }
@@ -69,7 +69,7 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
         }
 
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
-        $this->assertEquals(10, $initCredit - $finalCredit);
+        $this->assertLessThanOrEqual(10, $initCredit - $finalCredit);
     }
 
     public function testCheckInbox()

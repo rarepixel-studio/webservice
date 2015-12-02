@@ -14,7 +14,7 @@ use OpiloClient\Response\Status;
 use OpiloClient\V2\HttpClient;
 use PHPUnit_Framework_TestCase;
 
-class HttpClientTest extends PHPUnit_Framework_TestCase
+class HttpClientBasicTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var HttpClient
@@ -37,7 +37,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
     public function testSendSingleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
-        $message = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), __CLASS__ . '::' . __FUNCTION__ . '()', null);
+        $message = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSingleSMS()', null);
         $response = $this->client->sendSMS($message);
         $this->assertCount(1, $response);
         $this->assertInstanceOf(SMSId::class, $response[0]);
@@ -47,7 +47,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         $this->assertCount(1, $status);
         $this->assertInstanceOf(Status::class, $status[0]);
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
-        $this->assertEquals(1, $initCredit - $finalCredit);
+        $this->assertLessThanOrEqual(1, $initCredit - $finalCredit);
     }
 
     public function testSendMultipleSMS()
@@ -55,7 +55,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         $initCredit = $this->client->getCredit()->getSmsPageCount();
         $messages = [];
         for($i = 0; $i < 10; $i++) {
-            $messages[] = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), __CLASS__ . '::' . __FUNCTION__ . "($i)" , $i, new \DateTime("+$i Days"));
+            $messages[] = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendMultipleSMS' . "($i)" , $i, new \DateTime("+$i Minutes"));
         }
 
         $response = $this->client->sendSMS($messages);
@@ -75,7 +75,7 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         }
 
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
-        $this->assertEquals(10, $initCredit - $finalCredit);
+        $this->assertLessThanOrEqual(10, $initCredit - $finalCredit);
     }
 
     public function testCheckInbox()
