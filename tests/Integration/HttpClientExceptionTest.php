@@ -21,6 +21,9 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
         $client->getCredit();
     }
 
+    /**
+     * @group 403
+     */
     public function test403()
     {
         $this->setExpectedException(CommunicationException::class, 'Forbidden [Web-service is disabled]', CommunicationException::FORBIDDEN);

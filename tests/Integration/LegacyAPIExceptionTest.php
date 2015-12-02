@@ -19,6 +19,9 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
         $client->sendSMS('3000', '9130000000', 'text');
     }
 
+    /**
+     * @group 403
+     */
     public function test403()
     {
         $this->setExpectedException(CommunicationException::class, 'Forbidden [Web-service is disabled]', CommunicationException::FORBIDDEN);
