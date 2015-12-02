@@ -60,7 +60,7 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
             new OutgoingSMS('abcd', getenv('DESTINATION'), 'invalid from'),
             new OutgoingSMS(getenv('PANEL_LINE'), 'abcd', 'invalid to'),
             new OutgoingSMS('3000', getenv('DESTINATION'), 'unauthorized from'),
-            new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'unauthorized from'),
+            new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'authorized from'),
         ];
 
         $response = $client->sendSMS($messages);
