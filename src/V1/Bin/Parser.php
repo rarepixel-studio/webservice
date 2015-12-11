@@ -31,17 +31,19 @@ class Parser
     const STATUS_BLOCKED = 27;
 
     private static $statusMap = [
-        self::STATUS_QUEUED => Status::QUEUED,
-        self::STATUS_DELIVERED_TO_DESTINATION => Status::DELIVERED_TO_DESTINATION,
-        self::STATUS_FAILED_TO_DELIVER_TO_DESTINATION => Status::FAILED_TO_DELIVER_TO_DESTINATION,
-        self::STATUS_DELIVERED_TO_COMMUNICATION_CO => Status::DELIVERED_TO_COMMUNICATION_CO,
-        self::STATUS_FAILED_TO_DELIVER_TO_COMMUNICATION_CO=> Status::REJECTED_BY_COMMUNICATION_CO_AND_REFUNDED,
-        self::STATUS_BLOCKED => Status::REJECTED_BY_OPERATOR_AND_REFUNDED,
+        self::STATUS_QUEUED                                => Status::QUEUED,
+        self::STATUS_DELIVERED_TO_DESTINATION              => Status::DELIVERED_TO_DESTINATION,
+        self::STATUS_FAILED_TO_DELIVER_TO_DESTINATION      => Status::FAILED_TO_DELIVER_TO_DESTINATION,
+        self::STATUS_DELIVERED_TO_COMMUNICATION_CO         => Status::DELIVERED_TO_COMMUNICATION_CO,
+        self::STATUS_FAILED_TO_DELIVER_TO_COMMUNICATION_CO => Status::REJECTED_BY_COMMUNICATION_CO_AND_REFUNDED,
+        self::STATUS_BLOCKED                               => Status::REJECTED_BY_OPERATOR_AND_REFUNDED,
     ];
 
     /**
      * @param ResponseInterface $response
+     *
      * @return string
+     *
      * @throws CommunicationException
      */
     public static function getRawResponseBody(ResponseInterface $response)
@@ -53,13 +55,14 @@ class Parser
             throw new CommunicationException("StatusCode: $statusCode, Contents: $rawResponse", CommunicationException::GENERAL_HTTP_ERROR);
         }
         static::checkForErrors($rawResponse);
+
         return $rawResponse;
     }
 
     private static function checkForErrors($rawResponse)
     {
-        if(is_numeric($rawResponse)) {
-            switch($rawResponse) {
+        if (is_numeric($rawResponse)) {
+            switch ($rawResponse) {
                 case static::VALIDATION_FAILED:
                     throw new CommunicationException('Input Validation Failed', CommunicationException::INVALID_INPUT);
                 case static::AUTHENTICATION_FAILED:
@@ -80,7 +83,9 @@ class Parser
 
     /**
      * @param ResponseInterface $response
+     *
      * @return Credit
+     *
      * @throws CommunicationException
      */
     public static function prepareCredit(ResponseInterface $response)
@@ -90,32 +95,36 @@ class Parser
 
     /**
      * @param ResponseInterface $response
+     *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
+     *
      * @throws CommunicationException
      */
     public static function prepareSendResponse(ResponseInterface $response)
     {
         $body = static::getRawResponseBody($response);
         $decoded = json_decode($body, true);
-        if(is_numeric($body)) {
+        if (is_numeric($body)) {
             $decoded = [$decoded];
         }
         $output = [];
         foreach ($decoded as $id) {
-            if($id < 10) {
+            if ($id < 10) {
                 $output[] = new SendError($id);
-            }
-            else {
+            } else {
                 $output[] = new SMSId($id);
             }
         }
+
         return $output;
     }
 
     /**
      * @param int[] $opiloIds
      * @param $response
+     *
      * @return status[]
+     *
      * @throws CommunicationException
      */
     public static function prepareStatusArray($opiloIds, ResponseInterface $response)
@@ -123,19 +132,19 @@ class Parser
         $body = static::getRawResponseBody($response);
         $decoded = json_decode($body, true);
 
-        if(! is_array($decoded)) {
+        if (!is_array($decoded)) {
             throw new CommunicationException("Unprocessable Response: $body", CommunicationException::UNPROCESSABLE_RESPONSE);
         }
 
         $output = [];
 
-        foreach($opiloIds as $opiloId) {
+        foreach ($opiloIds as $opiloId) {
             $output[$opiloId] = new Status(Status::NOT_FOUND);
         }
 
         foreach ($decoded as $sms) {
-            if(!is_array($sms) || !array_key_exists('id', $sms) || !array_key_exists('status', $sms) || !array_key_exists($sms['status'], static::$statusMap)) {
-               throw new CommunicationException("Unprocessable Response item: $body", CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
+            if (!is_array($sms) || !array_key_exists('id', $sms) || !array_key_exists('status', $sms) || !array_key_exists($sms['status'], static::$statusMap)) {
+                throw new CommunicationException("Unprocessable Response item: $body", CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
             }
             $output[$sms['id']] = new Status(static::$statusMap[$sms['status']]);
         }
@@ -145,7 +154,9 @@ class Parser
 
     /**
      * @param ResponseInterface $response
+     *
      * @return Inbox
+     *
      * @throws CommunicationException
      */
     public static function prepareInbox(ResponseInterface $response)
@@ -153,19 +164,20 @@ class Parser
         $body = static::getRawResponseBody($response);
 
         $decoded = json_decode($body, true);
-        if(! is_array($decoded)) {
+        if (!is_array($decoded)) {
             throw new CommunicationException("Unprocessable Response: $body", CommunicationException::UNPROCESSABLE_RESPONSE);
         }
 
         $output = [];
-        if($decoded !== [[]]) {
+        if ($decoded !== [[]]) {
             foreach ($decoded as $sms) {
-                if(!is_array($sms) || ! array_key_exists('id', $sms) || ! array_key_exists('from', $sms) || ! array_key_exists('to', $sms) || ! array_key_exists('date', $sms)) {
+                if (!is_array($sms) || !array_key_exists('id', $sms) || !array_key_exists('from', $sms) || !array_key_exists('to', $sms) || !array_key_exists('date', $sms)) {
                     throw new CommunicationException("Unprocessable Response item: $body", CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
                 }
                 $output[] = new IncomingSMS($sms['id'], $sms['from'], $sms['to'], $sms['text'], \DateTime::createFromFormat('Y-m-d H:i:s', $sms['date']));
             }
         }
+
         return new Inbox($output);
     }
 }

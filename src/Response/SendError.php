@@ -19,6 +19,7 @@ class SendError extends SendSMSResponse
 
     /**
      * SendError constructor.
+     *
      * @param int $error
      */
     public function __construct($error)

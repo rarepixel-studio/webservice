@@ -11,11 +11,12 @@ class Credit
 
     /**
      * Credit constructor.
+     *
      * @param int $smsPageCount
      */
     public function __construct($smsPageCount)
     {
-        $this->smsPageCount = (int)$smsPageCount;
+        $this->smsPageCount = (int) $smsPageCount;
     }
 
     /**

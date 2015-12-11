@@ -37,7 +37,9 @@ class HttpClient
 
     /**
      * @param OutgoingSMS|OutgoingSMS[] $messages
+     *
      * @throws CommunicationException
+     *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
      */
     public function sendSMS($messages)
@@ -54,35 +56,39 @@ class HttpClient
     }
 
     /**
-     * @param int $minId
+     * @param int                  $minId
      * @param DateTime|string|null $minReceivedAt
-     * @param string $read
+     * @param string               $read
+     *
      * @see Inbox::INBOX_ALL, Inbox::INBOX_READ, Inbox::INBOX_NOT_READ
+     *
      * @param string|null $line_number
+     *
      * @return Inbox
+     *
      * @throws CommunicationException
      */
     public function checkInbox($minId = 0, $minReceivedAt = null, $read = Inbox::INBOX_ALL, $line_number = null)
     {
         $query = [];
 
-        if($minId) {
+        if ($minId) {
             $query['min_id'] = $minId;
         }
 
-        if($minReceivedAt) {
-            if($minReceivedAt instanceof DateTime) {
+        if ($minReceivedAt) {
+            if ($minReceivedAt instanceof DateTime) {
                 $query['min_received_at'] = $minReceivedAt->format('Y-m-d H:i:s');
             } else {
                 $query['min_received_at'] = $minReceivedAt;
             }
         }
 
-        if($read != Inbox::INBOX_ALL) {
+        if ($read != Inbox::INBOX_ALL) {
             $query['read'] = $read;
         }
 
-        if($line_number) {
+        if ($line_number) {
             $query['line_number'] = $line_number;
         }
 
@@ -95,7 +101,9 @@ class HttpClient
 
     /**
      * @param int|int[] $opiloIds
+     *
      * @throws CommunicationException
+     *
      * @return CheckStatusResponse
      */
     public function checkStatus($opiloIds)
@@ -113,13 +121,15 @@ class HttpClient
 
     /**
      * @throws CommunicationException
+     *
      * @return Credit
      */
     public function getCredit()
     {
-        $response = Out::send($this->client, $this->client->createRequest('GET','credit', [
+        $response = Out::send($this->client, $this->client->createRequest('GET', 'credit', [
             'query' => Out::attachAuth($this->account, []),
         ]));
+
         return Parser::prepareCredit($response);
     }
 }

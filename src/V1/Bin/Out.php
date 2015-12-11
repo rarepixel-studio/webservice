@@ -12,23 +12,26 @@ use OpiloClient\Response\CommunicationException;
 class Out
 {
     /**
-     * @param Client $client
+     * @param Client           $client
      * @param RequestInterface $request
+     *
      * @return ResponseInterface
+     *
      * @throws CommunicationException
      */
     public static function send(Client $client, RequestInterface $request)
     {
-        try{
+        try {
             return $client->send($request);
-        } catch(RequestException $e) {
-            throw new CommunicationException("RequestException", CommunicationException::GENERAL_HTTP_ERROR, $e);
+        } catch (RequestException $e) {
+            throw new CommunicationException('RequestException', CommunicationException::GENERAL_HTTP_ERROR, $e);
         }
     }
 
     /**
      * @param Account $account
-     * @param array $array
+     * @param array   $array
+     *
      * @return array
      */
     public static function attachAuth(Account $account, $array)

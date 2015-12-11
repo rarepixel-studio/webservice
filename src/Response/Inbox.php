@@ -2,7 +2,6 @@
 
 namespace OpiloClient\Response;
 
-
 use OpiloClient\Request\IncomingSMS;
 
 class Inbox
@@ -20,6 +19,7 @@ class Inbox
 
     /**
      * Inbox constructor.
+     *
      * @param IncomingSMS[] $messages
      */
     public function __construct(array $messages)
@@ -34,5 +34,4 @@ class Inbox
     {
         return $this->messages;
     }
-
 }

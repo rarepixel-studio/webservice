@@ -18,10 +18,11 @@ class IncomingSMS extends SMS
 
     /**
      * IncomingSMS constructor.
-     * @param int $opiloId
-     * @param string $from
-     * @param string $to
-     * @param string $text
+     *
+     * @param int      $opiloId
+     * @param string   $from
+     * @param string   $to
+     * @param string   $text
      * @param DateTime $receivedAt
      */
     public function __construct($opiloId, $from, $to, $text, DateTime $receivedAt)

@@ -5,7 +5,7 @@ namespace OpiloClient\Response;
 class Status
 {
     /**
-     * The Message is in Opilo server queues, waiting to be sent
+     * The Message is in Opilo server queues, waiting to be sent.
      */
     const QUEUED = 0;
 
@@ -15,7 +15,7 @@ class Status
     const DELIVERED_TO_OPERATOR = 1;
 
     /**
-     * The message is sent to communication co. by the operator. It has operator-side-id
+     * The message is sent to communication co. by the operator. It has operator-side-id.
      */
     const DELIVERED_TO_COMMUNICATION_CO = 2;
 
@@ -31,12 +31,12 @@ class Status
     const FAILED_TO_DELIVER_TO_DESTINATION = 4;
 
     /**
-     * The message is dropped by Opilo while trying to send, and is refunded
+     * The message is dropped by Opilo while trying to send, and is refunded.
      */
     const DROPPED_AND_REFUNDED = -1;
 
     /**
-     * The message was rejected while Opilo was trying to send it to operator. Operator did not charged the account for this message
+     * The message was rejected while Opilo was trying to send it to operator. Operator did not charged the account for this message.
      */
     const REJECTED_BY_OPERATOR_AND_REFUNDED = -2;
 
@@ -51,7 +51,7 @@ class Status
     const REJECTED_BY_DESTINATION_AND_REFUNDED = -4;
 
     /**
-     * No message with this id is found
+     * No message with this id is found.
      */
     const NOT_FOUND = -5;
     /**
@@ -61,6 +61,7 @@ class Status
 
     /**
      * Status constructor.
+     *
      * @param int $code
      */
     public function __construct($code)

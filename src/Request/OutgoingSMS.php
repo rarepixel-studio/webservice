@@ -18,10 +18,11 @@ class OutgoingSMS extends SMS
 
     /**
      * SMS constructor.
-     * @param string $from
-     * @param string $to
-     * @param string $text
-     * @param string|null $userDefinedId
+     *
+     * @param string        $from
+     * @param string        $to
+     * @param string        $text
+     * @param string|null   $userDefinedId
      * @param null|DateTime $sendAt
      */
     public function __construct($from, $to, $text, $userDefinedId = null, $sendAt = null)

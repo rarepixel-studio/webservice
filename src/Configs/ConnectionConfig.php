@@ -8,13 +8,15 @@ class ConnectionConfig
 {
     const VERSION_1 = '1';
     const VERSION_2 = '2';
+
     /**
      * @var string Server Base URI, e.g. https://bpanel.opilo.com
      */
     protected $serverBaseUrl;
 
     /**
-     * OpiloConnectionConfig constructor
+     * OpiloConnectionConfig constructor.
+     *
      * @param string $serverBaseUrl
      */
     public function __construct($serverBaseUrl)
@@ -26,17 +28,18 @@ class ConnectionConfig
     {
         return new Client([
             'base_url' => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
-            'defaults' => ['exceptions' => false]
+            'defaults' => ['exceptions' => false],
         ]);
     }
 
     /**
      * @param $apiVersion
+     *
      * @return string
      */
     protected function getVersionSegment($apiVersion)
     {
-        if($apiVersion == self::VERSION_1) {
+        if ($apiVersion == self::VERSION_1) {
             return '/WS/';
         }
 
