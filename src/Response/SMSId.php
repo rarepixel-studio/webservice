@@ -11,6 +11,7 @@ class SMSId extends SendSMSResponse
 
     /**
      * OpiloSMSId constructor.
+     *
      * @param string|null $id
      */
     public function __construct($id)

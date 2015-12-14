@@ -2,13 +2,12 @@
 
 namespace OpiloClient\Configs;
 
-
 class Account
 {
     protected $userName;
     protected $password;
 
-    function __construct($userName, $password)
+    public function __construct($userName, $password)
     {
         $this->userName = $userName;
         $this->password = $password;

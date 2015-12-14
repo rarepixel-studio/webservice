@@ -17,7 +17,9 @@ class Parser
 {
     /**
      * @param ResponseInterface $response
+     *
      * @return string
+     *
      * @throws CommunicationException
      */
     public static function getRawResponseBody(ResponseInterface $response)
@@ -28,29 +30,36 @@ class Parser
         if ($statusCode != 200) {
             throw CommunicationException::createFromHTTPResponse($statusCode, $rawResponse);
         }
+
         return $rawResponse;
     }
 
     /**
      * @param ResponseInterface $response
+     *
      * @return Status[]
+     *
      * @throws CommunicationException
+     *
      * @return Credit
      */
     public static function prepareCredit(ResponseInterface $response)
     {
         $rawResponse = static::getRawResponseBody($response);
         $array = json_decode($rawResponse, true);
-        if(! is_array($array) || ! array_key_exists('sms_page_count', $array)) {
+        if (!is_array($array) || !array_key_exists('sms_page_count', $array)) {
             throw new CommunicationException("Unprocessable Response: $rawResponse",
                 CommunicationException::UNPROCESSABLE_RESPONSE);
         }
+
         return new Credit($array['sms_page_count']);
     }
 
     /**
      * @param ResponseInterface $response
+     *
      * @return Inbox
+     *
      * @throws CommunicationException
      */
     public static function prepareIncomingSMS(ResponseInterface $response)
@@ -68,7 +77,7 @@ class Parser
         $prepared = [];
 
         foreach ($array as $id => $item) {
-            if(!is_array($item) || !array_key_exists('from', $item) || !array_key_exists('to', $item) ||
+            if (!is_array($item) || !array_key_exists('from', $item) || !array_key_exists('to', $item) ||
                 !array_key_exists('text', $item) || !array_key_exists('received_at', $item)) {
                 throw new CommunicationException("Unprocessable Response item: $rawResponse",
                     CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
@@ -82,7 +91,9 @@ class Parser
 
     /**
      * @param string $rawResponse
+     *
      * @return Status[]
+     *
      * @throws CommunicationException
      */
     protected static function makeStatusArray($rawResponse)
@@ -102,7 +113,7 @@ class Parser
                 throw new CommunicationException("Unprocessable Response item: $rawResponse",
                     CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
             }
-            $prepared[] = new Status((int)$item);
+            $prepared[] = new Status((int) $item);
         }
 
         return new CheckStatusResponse($prepared);
@@ -110,18 +121,23 @@ class Parser
 
     /**
      * @param ResponseInterface $response
+     *
      * @throws CommunicationException
+     *
      * @return Status[]
      */
     public static function prepareStatusArray(ResponseInterface $response)
     {
         $rawResponse = static::getRawResponseBody($response);
+
         return static::makeStatusArray($rawResponse);
     }
 
     /**
      * @param ResponseInterface $response
+     *
      * @return SendSMSResponse[]
+     *
      * @throws CommunicationException
      */
     public static function prepareSendResponse(ResponseInterface $response)
@@ -133,7 +149,9 @@ class Parser
 
     /**
      * @param string $rawResponse
+     *
      * @return SendSMSResponse[]
+     *
      * @throws CommunicationException
      */
     protected static function makeSendResponseArray($rawResponse)

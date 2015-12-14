@@ -44,7 +44,7 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
         try {
             $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
             $client->checkStatus(['string']);
-        } catch(ValidationException $e) {
+        } catch (ValidationException $e) {
             $failed = true;
             $errors = $e->getErrors();
             $this->assertCount(1, $errors);

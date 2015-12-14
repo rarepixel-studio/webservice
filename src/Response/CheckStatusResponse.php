@@ -11,6 +11,7 @@ class CheckStatusResponse
 
     /**
      * CheckStatusResponse constructor.
+     *
      * @param Status[] $statusArray
      */
     public function __construct(array $statusArray)

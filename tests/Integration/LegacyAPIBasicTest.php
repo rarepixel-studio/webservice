@@ -51,7 +51,7 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
         $initCredit = $this->client->getCredit()->getSmsPageCount();
         $to = [];
         $text = 'legacy::testSendMultipleSMS()';
-        for($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $to[] = getenv('DESTINATION');
         }
         $response = $this->client->sendSMS(getenv('PANEL_LINE'), $to, $text);

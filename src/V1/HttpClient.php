@@ -34,10 +34,12 @@ class HttpClient
     }
 
     /**
-     * @param string $from
+     * @param string       $from
      * @param string|array $to
-     * @param string $text
+     * @param string       $text
+     *
      * @return SendError[]|SendSMSResponse[]|SMSId[]
+     *
      * @throws CommunicationException
      */
     public function sendSMS($from, $to, $text)
@@ -45,13 +47,13 @@ class HttpClient
         if (!is_array($to)) {
             $to = [$to];
         }
-        $to = join(',', $to);
+        $to = implode(',', $to);
 
         $request = $this->client->createRequest('GET', 'httpsend', [
             'query' => Out::attachAuth($this->account, [
                 'from' => $from,
-                'to' => $to,
-                'text' => $text]),
+                'to'   => $to,
+                'text' => $text, ]),
             ]
         );
         $response = Out::send($this->client, $request);
@@ -60,30 +62,32 @@ class HttpClient
     }
 
     /**
-     * @param int $fromId
+     * @param int         $fromId
      * @param string|null $fromDate
-     * @param int $read
+     * @param int         $read
      * @param string|null $number
-     * @param int $count
+     * @param int         $count
+     *
      * @return Inbox
+     *
      * @throws CommunicationException
      */
     public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = Inbox::PAGE_LIMIT)
     {
         $query = [];
-        if($fromId) {
+        if ($fromId) {
             $query['from_id'] = $fromId;
         }
-        if($fromDate) {
+        if ($fromDate) {
             $query['from_date'] = $fromDate;
         }
-        if($read) {
+        if ($read) {
             $query['read'] = 1;
         }
-        if($number) {
+        if ($number) {
             $query['number'] = $number;
         }
-        if($count) {
+        if ($count) {
             $query[$count] = $count;
         }
         $request = $this->client->createRequest('GET', 'getAllMessages', [
@@ -95,18 +99,20 @@ class HttpClient
     }
 
     /**
-     * @param int $from offset from
+     * @param int $from  offset from
      * @param int $count
+     *
      * @deprecated
+     *
      * @return Inbox
      */
     public function receive($from = 0, $count = Inbox::PAGE_LIMIT)
     {
         $query = [];
-        if($from) {
+        if ($from) {
             $query['from'] = $from;
         }
-        if($count) {
+        if ($count) {
             $query['count'] = $count;
         }
         $request = $this->client->createRequest('GET', 'recieve', [
@@ -118,17 +124,18 @@ class HttpClient
     }
     /**
      * @param int|int[] $opiloIds
+     *
      * @return Status[]
      */
     public function checkStatus($opiloIds)
     {
-        if(! is_array($opiloIds)) {
+        if (!is_array($opiloIds)) {
             $opiloIds = [$opiloIds];
         }
         $request = $this->client->createRequest('GET', 'getStatus', [
                 'query' => Out::attachAuth($this->account, [
                     'ids' => $opiloIds,
-                ])]);
+                ]), ]);
         $response = Out::send($this->client, $request);
 
         return Parser::prepareStatusArray($opiloIds, $response);
@@ -136,6 +143,7 @@ class HttpClient
 
     /**
      * @return Credit
+     *
      * @throws CommunicationException
      */
     public function getCredit()

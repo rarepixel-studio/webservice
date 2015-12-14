@@ -2,7 +2,6 @@
 
 namespace OpiloClient\Request;
 
-
 abstract class SMS
 {
     /**
@@ -22,6 +21,7 @@ abstract class SMS
 
     /**
      * SMS constructor.
+     *
      * @param string $from
      * @param string $to
      * @param string $text

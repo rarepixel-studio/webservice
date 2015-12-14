@@ -19,7 +19,7 @@ class ValidationException extends CommunicationException
         parent::__construct('Input Validation Failed', static::INVALID_INPUT);
         $this->httpResponseBody = $httpResponseBody;
         $errors = json_decode($httpResponseBody, true);
-        if(is_array($errors) && array_key_exists('errors', $errors)) {
+        if (is_array($errors) && array_key_exists('errors', $errors)) {
             $this->errors = $errors['errors'];
         }
     }

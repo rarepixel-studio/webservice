@@ -1,4 +1,5 @@
 <?php
+
 putenv('OPILO_URL=http://bpanel.opilo.com');
 putenv('OPILO_USERNAME=your_web_service_username');
 putenv('OPILO_PASSWORD=your_web_service_password');

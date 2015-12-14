@@ -49,7 +49,7 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
         $response = $client->sendSMS(getenv('PANEL_LINE'), 'junk,' . getenv('DESTINATION'), 'text');
         $this->assertCount(2, $response);
         $this->assertInstanceOf(SendError::class, $response[0]);
-        $this->assertEquals(SendError::ERROR_INVALID_DESTINATION ,$response[0]->getError());
+        $this->assertEquals(SendError::ERROR_INVALID_DESTINATION, $response[0]->getError());
         $this->assertInstanceOf(SMSId::class, $response[1]);
     }
 }
