@@ -9,7 +9,7 @@ use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\V2\HttpClient;
 ...
 $config = new ConnectionConfig('http://bpanel.opilo.com');
-$account = new Account('YOUR_WEBSERVICE_USERNAME'), 'YOUR_WEBSERVICE_PASSWORD');
+$account = new Account('YOUR_WEBSERVICE_USERNAME', 'YOUR_WEBSERVICE_PASSWORD');
 $client = new HttpClient($config, $account);
 ```
 ## Sending SMS
