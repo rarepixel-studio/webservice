@@ -2,7 +2,6 @@
 
 namespace OpiloClient\V1\Bin;
 
-use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
@@ -11,6 +10,7 @@ use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
+use Psr\Http\Message\ResponseInterface;
 
 class Parser
 {

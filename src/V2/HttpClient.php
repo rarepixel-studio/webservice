@@ -47,7 +47,7 @@ class HttpClient
         if (!is_array($messages)) {
             $messages = [$messages];
         }
-        $request = $this->client->createRequest('POST', 'sms/send', [
+        $request = $this->client->request('POST', 'sms/send', [
             'json' => Out::attachAuth($this->account, Out::SMSArrayToSendRequestBody($messages)),
         ]);
         $response = Out::send($this->client, $request);
@@ -92,7 +92,7 @@ class HttpClient
             $query['line_number'] = $line_number;
         }
 
-        $response = Out::send($this->client, $this->client->createRequest('GET', 'inbox', [
+        $response = Out::send($this->client, $this->client->request('GET', 'inbox', [
             'query' => Out::attachAuth($this->account, $query),
         ]));
 
@@ -112,7 +112,7 @@ class HttpClient
             $opiloIds = [$opiloIds];
         }
 
-        $response = Out::send($this->client, $this->client->createRequest('GET', 'sms/status', [
+        $response = Out::send($this->client, $this->client->request('GET', 'sms/status', [
             'query' => Out::attachAuth($this->account, ['ids' => $opiloIds]),
         ]));
 
@@ -126,7 +126,7 @@ class HttpClient
      */
     public function getCredit()
     {
-        $response = Out::send($this->client, $this->client->createRequest('GET', 'credit', [
+        $response = Out::send($this->client, $this->client->request('GET', 'credit', [
             'query' => Out::attachAuth($this->account, []),
         ]));
 

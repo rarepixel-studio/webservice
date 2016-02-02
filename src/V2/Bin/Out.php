@@ -4,11 +4,11 @@ namespace OpiloClient\V2\Bin;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Message\RequestInterface;
-use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CommunicationException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Out
 {

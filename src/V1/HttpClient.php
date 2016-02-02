@@ -49,7 +49,7 @@ class HttpClient
         }
         $to = implode(',', $to);
 
-        $request = $this->client->createRequest('GET', 'httpsend', [
+        $request = $this->client->request('GET', 'httpsend', [
             'query' => Out::attachAuth($this->account, [
                 'from' => $from,
                 'to'   => $to,
@@ -90,7 +90,7 @@ class HttpClient
         if ($count) {
             $query[$count] = $count;
         }
-        $request = $this->client->createRequest('GET', 'getAllMessages', [
+        $request = $this->client->request('GET', 'getAllMessages', [
             'query' => Out::attachAuth($this->account, $query),
         ]);
         $response = Out::send($this->client, $request);
@@ -115,7 +115,7 @@ class HttpClient
         if ($count) {
             $query['count'] = $count;
         }
-        $request = $this->client->createRequest('GET', 'recieve', [
+        $request = $this->client->request('GET', 'recieve', [
             'query' => Out::attachAuth($this->account, $query),
         ]);
         $response = Out::send($this->client, $request);
@@ -132,7 +132,7 @@ class HttpClient
         if (!is_array($opiloIds)) {
             $opiloIds = [$opiloIds];
         }
-        $request = $this->client->createRequest('GET', 'getStatus', [
+        $request = $this->client->request('GET', 'getStatus', [
                 'query' => Out::attachAuth($this->account, [
                     'ids' => $opiloIds,
                 ]), ]);
@@ -148,7 +148,7 @@ class HttpClient
      */
     public function getCredit()
     {
-        $request = $this->client->createRequest('GET', 'getCredit', [
+        $request = $this->client->request('GET', 'getCredit', [
             'query' => Out::attachAuth($this->account, []),
         ]);
         $response = Out::send($this->client, $request);
