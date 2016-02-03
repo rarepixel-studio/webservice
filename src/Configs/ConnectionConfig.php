@@ -28,7 +28,7 @@ class ConnectionConfig
     {
         return new Client([
             'base_uri' => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
-            'defaults' => ['exceptions' => false],
+            'exceptions' => false
         ]);
     }
 

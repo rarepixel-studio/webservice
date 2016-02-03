@@ -3,6 +3,7 @@
 namespace OpiloClient\V1;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
@@ -49,14 +50,12 @@ class HttpClient
         }
         $to = implode(',', $to);
 
-        $request = $this->client->request('GET', 'httpsend', [
-            'query' => Out::attachAuth($this->account, [
-                'from' => $from,
-                'to'   => $to,
-                'text' => $text, ]),
-            ]
-        );
-        $response = Out::send($this->client, $request);
+        $request = new Request('GET', 'httpsend');
+        $response = Out::send($this->client, $request, $this->account, [
+            'from' => $from,
+            'to'   => $to,
+            'text' => $text
+        ]);
 
         return Parser::prepareSendResponse($response);
     }
@@ -90,10 +89,8 @@ class HttpClient
         if ($count) {
             $query[$count] = $count;
         }
-        $request = $this->client->request('GET', 'getAllMessages', [
-            'query' => Out::attachAuth($this->account, $query),
-        ]);
-        $response = Out::send($this->client, $request);
+        $request = new Request('GET', 'getAllMessages');
+        $response = Out::send($this->client, $request, $this->account, $query);
 
         return Parser::prepareInbox($response);
     }
@@ -115,10 +112,8 @@ class HttpClient
         if ($count) {
             $query['count'] = $count;
         }
-        $request = $this->client->request('GET', 'recieve', [
-            'query' => Out::attachAuth($this->account, $query),
-        ]);
-        $response = Out::send($this->client, $request);
+        $request = new Request('GET', 'recieve');
+        $response = Out::send($this->client, $request, $this->account, $query);
 
         return Parser::prepareInbox($response);
     }
@@ -132,11 +127,8 @@ class HttpClient
         if (!is_array($opiloIds)) {
             $opiloIds = [$opiloIds];
         }
-        $request = $this->client->request('GET', 'getStatus', [
-                'query' => Out::attachAuth($this->account, [
-                    'ids' => $opiloIds,
-                ]), ]);
-        $response = Out::send($this->client, $request);
+        $request = new Request('GET', 'getStatus');
+        $response = Out::send($this->client, $request, $this->account, ['ids' => $opiloIds]);
 
         return Parser::prepareStatusArray($opiloIds, $response);
     }
@@ -148,10 +140,8 @@ class HttpClient
      */
     public function getCredit()
     {
-        $request = $this->client->request('GET', 'getCredit', [
-            'query' => Out::attachAuth($this->account, []),
-        ]);
-        $response = Out::send($this->client, $request);
+        $request = new Request('GET', 'getCredit');
+        $response = Out::send($this->client, $request, $this->account);
 
         return Parser::prepareCredit($response);
     }

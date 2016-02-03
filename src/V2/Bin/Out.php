@@ -13,17 +13,20 @@ use Psr\Http\Message\ResponseInterface;
 class Out
 {
     /**
-     * @param Client           $client
+     * @param Client $client
      * @param RequestInterface $request
      *
+     * @param Account $account
+     * @param array $params
      * @return ResponseInterface
-     *
      * @throws CommunicationException
      */
-    public static function send(Client $client, RequestInterface $request)
+    public static function send(Client $client, RequestInterface $request, Account $account, $params = [])
     {
         try {
-            return $client->send($request);
+            return $client->send($request, [
+                'query' => self::attachAuth($account, $params),
+            ]);
         } catch (RequestException $e) {
             throw new CommunicationException('RequestException', CommunicationException::GENERAL_HTTP_ERROR, $e);
         }
@@ -35,7 +38,7 @@ class Out
      *
      * @return array
      */
-    public static function attachAuth(Account $account, $array)
+    private static function attachAuth(Account $account, $array)
     {
         return array_merge(['username' => $account->getUserName(), 'password' => $account->getPassword()], $array);
     }

@@ -4,6 +4,7 @@ namespace OpiloClient\V2;
 
 use DateTime;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\OutgoingSMS;
@@ -47,10 +48,8 @@ class HttpClient
         if (!is_array($messages)) {
             $messages = [$messages];
         }
-        $request = $this->client->request('POST', 'sms/send', [
-            'json' => Out::attachAuth($this->account, Out::SMSArrayToSendRequestBody($messages)),
-        ]);
-        $response = Out::send($this->client, $request);
+        $request = new Request('POST', 'sms/send');
+        $response = Out::send($this->client, $request, $this->account, Out::SMSArrayToSendRequestBody($messages));
 
         return Parser::prepareSendResponse($response);
     }
@@ -92,9 +91,7 @@ class HttpClient
             $query['line_number'] = $line_number;
         }
 
-        $response = Out::send($this->client, $this->client->request('GET', 'inbox', [
-            'query' => Out::attachAuth($this->account, $query),
-        ]));
+        $response = Out::send($this->client, new Request('GET', 'inbox'), $this->account, $query);
 
         return Parser::prepareIncomingSMS($response);
     }
@@ -112,9 +109,7 @@ class HttpClient
             $opiloIds = [$opiloIds];
         }
 
-        $response = Out::send($this->client, $this->client->request('GET', 'sms/status', [
-            'query' => Out::attachAuth($this->account, ['ids' => $opiloIds]),
-        ]));
+        $response = Out::send($this->client, new Request('GET', 'sms/status'), $this->account, ['ids' => $opiloIds]);
 
         return Parser::prepareStatusArray($response);
     }
@@ -126,9 +121,7 @@ class HttpClient
      */
     public function getCredit()
     {
-        $response = Out::send($this->client, $this->client->request('GET', 'credit', [
-            'query' => Out::attachAuth($this->account, []),
-        ]));
+        $response = Out::send($this->client, new Request('GET', 'credit'), $this->account);
 
         return Parser::prepareCredit($response);
     }

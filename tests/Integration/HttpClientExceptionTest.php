@@ -2,6 +2,7 @@
 
 namespace OpiloClientTest\Integration;
 
+use GuzzleHttp\Client;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\OutgoingSMS;
