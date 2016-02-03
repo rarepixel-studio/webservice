@@ -38,7 +38,7 @@ class Out
      *
      * @return array
      */
-    private static function attachAuth(Account $account, $array)
+    public static function attachAuth(Account $account, $array)
     {
         return array_merge(['username' => $account->getUserName(), 'password' => $account->getPassword()], $array);
     }
