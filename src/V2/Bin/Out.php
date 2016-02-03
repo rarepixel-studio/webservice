@@ -34,7 +34,7 @@ class Out
 
     /**
      * @param Account $account
-     * @param array   $array
+     * @param array $array
      *
      * @return array
      */
@@ -57,7 +57,7 @@ class Out
         $first = true;
         foreach ($messages as $message) {
             if ($first) {
-                $first = false;
+                $first             = false;
                 $array['defaults'] = [
                     'from' => $message->getFrom(),
                     'text' => $message->getText(),
@@ -82,7 +82,8 @@ class Out
 
             if ($message->getSendAt() &&
                 (!array_key_exists('send_at', $array['defaults']) ||
-                    $array['defaults']['send_at'] != $message->formatSendAt())) {
+                    $array['defaults']['send_at'] != $message->formatSendAt())
+            ) {
                 $msg['send_at'] = $message->formatSendAt();
             }
 

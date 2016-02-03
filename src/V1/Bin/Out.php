@@ -33,7 +33,7 @@ class Out
 
     /**
      * @param Account $account
-     * @param array   $array
+     * @param array $array
      *
      * @return array
      */

@@ -15,8 +15,8 @@ use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
-use OpiloClient\V2\Bin\Parser;
 use OpiloClient\V2\Bin\Out;
+use OpiloClient\V2\Bin\Parser;
 
 class HttpClient
 {
@@ -32,7 +32,7 @@ class HttpClient
 
     public function __construct(ConnectionConfig $config, Account $account)
     {
-        $this->client = $config->getHttpClient(ConnectionConfig::VERSION_2);
+        $this->client  = $config->getHttpClient(ConnectionConfig::VERSION_2);
         $this->account = $account;
     }
 
@@ -48,16 +48,16 @@ class HttpClient
         if (!is_array($messages)) {
             $messages = [$messages];
         }
-        $request = new Request('POST', 'sms/send');
+        $request  = new Request('POST', 'sms/send');
         $response = Out::send($this->client, $request, $this->account, Out::SMSArrayToSendRequestBody($messages));
 
         return Parser::prepareSendResponse($response);
     }
 
     /**
-     * @param int                  $minId
+     * @param int $minId
      * @param DateTime|string|null $minReceivedAt
-     * @param string               $read
+     * @param string $read
      *
      * @see Inbox::INBOX_ALL, Inbox::INBOX_READ, Inbox::INBOX_NOT_READ
      *
