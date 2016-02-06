@@ -2,6 +2,7 @@
 
 namespace OpiloClientTest\Integration;
 
+use GuzzleHttp\ClientInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\IncomingSMS;
@@ -11,24 +12,30 @@ use OpiloClient\Response\Credit;
 use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
-use OpiloClient\V2\HttpClient;
+use OpiloClient\V2\HttpClient6;
 use PHPUnit_Framework_TestCase;
 
-class HttpClientBasicTest extends PHPUnit_Framework_TestCase
+class HttpClient6BasicTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var HttpClient
+     * @var HttpClient6
      */
     private $client;
+
+    private $guzzleVersion;
 
     public function setUp()
     {
         parent::setUp();
-        $this->client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $this->client = new HttpClient6(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $this->guzzleVersion = (string)ClientInterface::VERSION[0];
     }
 
     public function testGetCredit()
     {
+        if ($this->guzzleVersion !== '6') {
+            return;
+        }
         $credit = $this->client->getCredit();
         $this->assertInstanceOf(Credit::class, $credit);
         $this->assertTrue(is_numeric($credit->getSmsPageCount()));
@@ -36,6 +43,9 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
 
     public function testSendSingleSMS()
     {
+        if ($this->guzzleVersion !== '6') {
+            return;
+        }
         $initCredit = $this->client->getCredit()->getSmsPageCount();
         $message = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSingleSMS()', null);
         $response = $this->client->sendSMS($message);
@@ -52,6 +62,9 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
 
     public function testSendMultipleSMS()
     {
+        if ($this->guzzleVersion !== '6') {
+            return;
+        }
         $initCredit = $this->client->getCredit()->getSmsPageCount();
         $messages = [];
         for ($i = 0; $i < 10; $i++) {
@@ -80,6 +93,9 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
 
     public function testCheckInbox()
     {
+        if ($this->guzzleVersion !== '6') {
+            return;
+        }
         $response = $this->client->checkInbox(0);
         $this->assertInstanceOf(Inbox::class, $response);
         $response = $response->getMessages();

@@ -4,29 +4,26 @@ namespace OpiloClient\V2\Bin;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Message\RequestInterface;
+use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CommunicationException;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
-class Out
+class Out5
 {
     /**
-     * @param Client $client
+     * @param Client           $client
      * @param RequestInterface $request
      *
-     * @param Account $account
-     * @param array $params
      * @return ResponseInterface
+     *
      * @throws CommunicationException
      */
-    public static function send(Client $client, RequestInterface $request, Account $account, $params = [])
+    public static function send(Client $client, RequestInterface $request)
     {
         try {
-            return $client->send($request, [
-                'query' => self::attachAuth($account, $params),
-            ]);
+            return $client->send($request);
         } catch (RequestException $e) {
             throw new CommunicationException('RequestException', CommunicationException::GENERAL_HTTP_ERROR, $e);
         }
@@ -34,7 +31,7 @@ class Out
 
     /**
      * @param Account $account
-     * @param array $array
+     * @param array   $array
      *
      * @return array
      */
@@ -57,7 +54,7 @@ class Out
         $first = true;
         foreach ($messages as $message) {
             if ($first) {
-                $first             = false;
+                $first = false;
                 $array['defaults'] = [
                     'from' => $message->getFrom(),
                     'text' => $message->getText(),

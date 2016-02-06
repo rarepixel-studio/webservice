@@ -3,7 +3,6 @@
 namespace OpiloClient\V1;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
@@ -13,10 +12,8 @@ use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
-use OpiloClient\V1\Bin\Out;
-use OpiloClient\V1\Bin\Parser;
 
-class HttpClient
+abstract class HttpClient
 {
     /**
      * @var Account
@@ -30,119 +27,55 @@ class HttpClient
 
     public function __construct(ConnectionConfig $config, Account $account)
     {
-        $this->client = $config->getHttpClient(ConnectionConfig::VERSION_1);
+        $this->client  = $config->getHttpClient(ConnectionConfig::VERSION_1);
         $this->account = $account;
     }
 
     /**
-     * @param string       $from
+     * @param string $from
      * @param string|array $to
-     * @param string       $text
+     * @param string $text
      *
      * @return SendError[]|SendSMSResponse[]|SMSId[]
      *
      * @throws CommunicationException
      */
-    public function sendSMS($from, $to, $text)
-    {
-        if (!is_array($to)) {
-            $to = [$to];
-        }
-        $to = implode(',', $to);
-
-        $request = new Request('GET', 'httpsend');
-        $response = Out::send($this->client, $request, $this->account, [
-            'from' => $from,
-            'to'   => $to,
-            'text' => $text
-        ]);
-
-        return Parser::prepareSendResponse($response);
-    }
+    abstract public function sendSMS($from, $to, $text);
 
     /**
-     * @param int         $fromId
+     * @param int $fromId
      * @param string|null $fromDate
-     * @param int         $read
+     * @param int $read
      * @param string|null $number
-     * @param int         $count
+     * @param int $count
      *
      * @return Inbox
      *
      * @throws CommunicationException
      */
-    public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = Inbox::PAGE_LIMIT)
-    {
-        $query = [];
-        if ($fromId) {
-            $query['from_id'] = $fromId;
-        }
-        if ($fromDate) {
-            $query['from_date'] = $fromDate;
-        }
-        if ($read) {
-            $query['read'] = 1;
-        }
-        if ($number) {
-            $query['number'] = $number;
-        }
-        if ($count) {
-            $query[$count] = $count;
-        }
-        $request = new Request('GET', 'getAllMessages');
-        $response = Out::send($this->client, $request, $this->account, $query);
-
-        return Parser::prepareInbox($response);
-    }
+    abstract public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = Inbox::PAGE_LIMIT);
 
     /**
-     * @param int $from  offset from
+     * @param int $from offset from
      * @param int $count
      *
      * @deprecated
      *
      * @return Inbox
      */
-    public function receive($from = 0, $count = Inbox::PAGE_LIMIT)
-    {
-        $query = [];
-        if ($from) {
-            $query['from'] = $from;
-        }
-        if ($count) {
-            $query['count'] = $count;
-        }
-        $request = new Request('GET', 'recieve');
-        $response = Out::send($this->client, $request, $this->account, $query);
+    abstract public function receive($from = 0, $count = Inbox::PAGE_LIMIT);
 
-        return Parser::prepareInbox($response);
-    }
     /**
      * @param int|int[] $opiloIds
      *
      * @return Status[]
      */
-    public function checkStatus($opiloIds)
-    {
-        if (!is_array($opiloIds)) {
-            $opiloIds = [$opiloIds];
-        }
-        $request = new Request('GET', 'getStatus');
-        $response = Out::send($this->client, $request, $this->account, ['ids' => $opiloIds]);
-
-        return Parser::prepareStatusArray($opiloIds, $response);
-    }
+    abstract public function checkStatus($opiloIds);
 
     /**
      * @return Credit
      *
      * @throws CommunicationException
      */
-    public function getCredit()
-    {
-        $request = new Request('GET', 'getCredit');
-        $response = Out::send($this->client, $request, $this->account);
-
-        return Parser::prepareCredit($response);
-    }
+    abstract public function getCredit();
 }

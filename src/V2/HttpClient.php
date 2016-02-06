@@ -4,7 +4,6 @@ namespace OpiloClient\V2;
 
 use DateTime;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\OutgoingSMS;
@@ -15,10 +14,8 @@ use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
-use OpiloClient\V2\Bin\Out;
-use OpiloClient\V2\Bin\Parser;
 
-class HttpClient
+abstract class HttpClient
 {
     /**
      * @var Account
@@ -43,16 +40,7 @@ class HttpClient
      *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
      */
-    public function sendSMS($messages)
-    {
-        if (!is_array($messages)) {
-            $messages = [$messages];
-        }
-        $request  = new Request('POST', 'sms/send');
-        $response = Out::send($this->client, $request, $this->account, Out::SMSArrayToSendRequestBody($messages));
-
-        return Parser::prepareSendResponse($response);
-    }
+    abstract public function sendSMS($messages);
 
     /**
      * @param int $minId
@@ -67,34 +55,7 @@ class HttpClient
      *
      * @throws CommunicationException
      */
-    public function checkInbox($minId = 0, $minReceivedAt = null, $read = Inbox::INBOX_ALL, $line_number = null)
-    {
-        $query = [];
-
-        if ($minId) {
-            $query['min_id'] = $minId;
-        }
-
-        if ($minReceivedAt) {
-            if ($minReceivedAt instanceof DateTime) {
-                $query['min_received_at'] = $minReceivedAt->format('Y-m-d H:i:s');
-            } else {
-                $query['min_received_at'] = $minReceivedAt;
-            }
-        }
-
-        if ($read != Inbox::INBOX_ALL) {
-            $query['read'] = $read;
-        }
-
-        if ($line_number) {
-            $query['line_number'] = $line_number;
-        }
-
-        $response = Out::send($this->client, new Request('GET', 'inbox'), $this->account, $query);
-
-        return Parser::prepareIncomingSMS($response);
-    }
+    abstract public function checkInbox($minId = 0, $minReceivedAt = null, $read = Inbox::INBOX_ALL, $line_number = null);
 
     /**
      * @param int|int[] $opiloIds
@@ -103,26 +64,12 @@ class HttpClient
      *
      * @return CheckStatusResponse
      */
-    public function checkStatus($opiloIds)
-    {
-        if (!is_array($opiloIds)) {
-            $opiloIds = [$opiloIds];
-        }
-
-        $response = Out::send($this->client, new Request('GET', 'sms/status'), $this->account, ['ids' => $opiloIds]);
-
-        return Parser::prepareStatusArray($response);
-    }
+    abstract public function checkStatus($opiloIds);
 
     /**
      * @throws CommunicationException
      *
      * @return Credit
      */
-    public function getCredit()
-    {
-        $response = Out::send($this->client, new Request('GET', 'credit'), $this->account);
-
-        return Parser::prepareCredit($response);
-    }
+    abstract public function getCredit();
 }
