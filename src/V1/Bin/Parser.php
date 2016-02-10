@@ -2,8 +2,7 @@
 
 namespace OpiloClient\V1\Bin;
 
-use GuzzleHttp\Message\ResponseInterface as Response5Interface;
-use Psr\Http\Message\ResponseInterface as Response6Interface;
+use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
@@ -12,6 +11,7 @@ use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
+use Psr\Http\Message\ResponseInterface as Response6Interface;
 
 class Parser
 {
@@ -41,7 +41,7 @@ class Parser
     ];
 
     /**
-     * @param Response5Interface|Response6Interface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return string
      *
@@ -83,7 +83,7 @@ class Parser
     }
 
     /**
-     * @param Response5Interface|Response6Interface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Credit
      *
@@ -95,7 +95,7 @@ class Parser
     }
 
     /**
-     * @param Response5Interface|Response6Interface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
      *
@@ -122,7 +122,7 @@ class Parser
 
     /**
      * @param int[] $opiloIds
-     * @param Response5Interface|Response6Interface $response
+     * @param ResponseInterface|Response6Interface$response
      *
      * @return status[]
      *
@@ -154,7 +154,7 @@ class Parser
     }
 
     /**
-     * @param Response5Interface|Response6Interface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Inbox
      *
