@@ -16,8 +16,8 @@ use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
-use OpiloClient\V2\Bin\Parser;
 use OpiloClient\V2\Bin\Out;
+use OpiloClient\V2\Bin\Parser;
 
 class HttpClient
 {
@@ -31,10 +31,16 @@ class HttpClient
      */
     protected $client;
 
+    private $clientVersion;
+
     public function __construct(ConnectionConfig $config, Account $account)
     {
-        $this->client  = $config->getHttpClient(ConnectionConfig::VERSION_2);
-        $this->account = $account;
+        $this->account       = $account;
+        $this->client        = $config->getHttpClient(ConnectionConfig::VERSION_2);
+        $this->clientVersion = (string)ClientInterface::VERSION[0];
+        if (!in_array($this->clientVersion, ['5', '6'])) {
+            throw new \Exception('unsupported guzzle version');
+        }
     }
 
     /**
@@ -50,14 +56,12 @@ class HttpClient
         }
 
         $options = Out::attachAuth($this->account, Out::SMSArrayToSendRequestBody($messages));
-        if ((string)ClientInterface::VERSION[0] == '5') {
+        if ($this->clientVersion == '5') {
             $request  = $this->client->createRequest('POST', 'sms/send', ['json' => $options]);
             $response = Out::send($this->client, $request);
-        } elseif ((string)ClientInterface::VERSION[0] == '6') {
+        } else {
             $request  = new Request('POST', 'sms/send');
             $response = Out::send($this->client, $request, ['query' => $options]);
-        } else {
-            throw new \Exception('unsupported guzzle version');
         }
 
         return Parser::prepareSendResponse($response);
@@ -100,14 +104,12 @@ class HttpClient
             $query['line_number'] = $line_number;
         }
 
-        $options = Out::attachAuth($this->account, $query);
-        if ((string)ClientInterface::VERSION[0] == '5') {
-            $response = Out::send($this->client, $this->client->createRequest('GET', 'inbox', ['query' => $options]));
-        } elseif ((string)ClientInterface::VERSION[0] == '6') {
-            $request  = new Request('GET', 'inbox');
-            $response = Out::send($this->client, $request, ['query' => $options]);
+        $options = ['query' => Out::attachAuth($this->account, $query)];
+        if ($this->clientVersion == '5') {
+            $response = Out::send($this->client, $this->client->createRequest('GET', 'inbox', $options));
         } else {
-            throw new \Exception('unsupported guzzle version');
+            $request  = new Request('GET', 'inbox');
+            $response = Out::send($this->client, $request, $options);
         }
 
         return Parser::prepareIncomingSMS($response);
@@ -126,14 +128,12 @@ class HttpClient
             $opiloIds = [$opiloIds];
         }
 
-        $options = Out::attachAuth($this->account, ['ids' => $opiloIds]);
-        if ((string)ClientInterface::VERSION[0] == '5') {
-            $response = Out::send($this->client, $this->client->createRequest('GET', 'sms/status', ['query' => $options]));
-        } elseif ((string)ClientInterface::VERSION[0] == '6') {
-            $request  = new Request('GET', 'sms/status');
-            $response = Out::send($this->client, $request, ['query' => $options]);
+        $options = ['query' => Out::attachAuth($this->account, ['ids' => $opiloIds])];
+        if ($this->clientVersion == '5') {
+            $response = Out::send($this->client, $this->client->createRequest('GET', 'sms/status', $options));
         } else {
-            throw new \Exception('unsupported guzzle version');
+            $request  = new Request('GET', 'sms/status');
+            $response = Out::send($this->client, $request, $options);
         }
 
         return Parser::prepareStatusArray($response);
@@ -146,14 +146,12 @@ class HttpClient
      */
     public function getCredit()
     {
-        $options = Out::attachAuth($this->account, []);
-        if ((string)ClientInterface::VERSION[0] == '5') {
-            $response = Out::send($this->client, $this->client->createRequest('GET', 'credit', ['query' => $options]));
-        } elseif ((string)ClientInterface::VERSION[0] == '6') {
-            $request  = new Request('GET', 'credit');
-            $response = Out::send($this->client, $request, ['query' => $options]);
+        $options = ['query' => Out::attachAuth($this->account, [])];
+        if ($this->clientVersion == '5') {
+            $response = Out::send($this->client, $this->client->createRequest('GET', 'credit', $options));
         } else {
-            throw new \Exception('unsupported guzzle version');
+            $request  = new Request('GET', 'credit');
+            $response = Out::send($this->client, $request, $options);
         }
 
         return Parser::prepareCredit($response);

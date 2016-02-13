@@ -11,7 +11,7 @@ use OpiloClient\Response\CommunicationException;
 use Psr\Http\Message\RequestInterface as Request6Interface;
 use Psr\Http\Message\ResponseInterface as Response6Interface;
 
-class Out5
+class Out
 {
     /**
      * @param Client           $client
