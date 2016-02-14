@@ -3,6 +3,7 @@
 namespace OpiloClient\Configs;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 
 class ConnectionConfig
 {
@@ -26,10 +27,21 @@ class ConnectionConfig
 
     public function getHttpClient($apiVersion = self::VERSION_2)
     {
-        return new Client([
-            'base_url' => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
-            'defaults' => ['exceptions' => false],
-        ]);
+        $version = ClientInterface::VERSION;
+        $version = $version[0];
+        if ($version === '5') {
+            return new Client([
+                'base_url' => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
+                'defaults' => ['exceptions' => false],
+            ]);
+        } elseif ($version === '6') {
+            return new Client([
+                'base_uri'   => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
+                'exceptions' => false,
+            ]);
+        } else {
+            throw new \RuntimeException('Unknown Guzzle version: ' . $version);
+        }
     }
 
     /**

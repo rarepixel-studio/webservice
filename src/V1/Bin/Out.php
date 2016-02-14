@@ -8,21 +8,24 @@ use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Response\CommunicationException;
+use Psr\Http\Message\RequestInterface as Request6Interface;
+use Psr\Http\Message\ResponseInterface as Response6Interface;
 
 class Out
 {
     /**
-     * @param Client           $client
-     * @param RequestInterface $request
+     * @param Client                               $client
+     * @param RequestInterface | Request6Interface $request
+     * @param array                                $options
      *
-     * @return ResponseInterface
+     * @return ResponseInterface | Response6Interface
      *
      * @throws CommunicationException
      */
-    public static function send(Client $client, RequestInterface $request)
+    public static function send(Client $client, $request, $options = [])
     {
         try {
-            return $client->send($request);
+            return $client->send($request, $options);
         } catch (RequestException $e) {
             throw new CommunicationException('RequestException', CommunicationException::GENERAL_HTTP_ERROR, $e);
         }

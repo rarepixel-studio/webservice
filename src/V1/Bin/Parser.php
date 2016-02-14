@@ -11,6 +11,7 @@ use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
+use Psr\Http\Message\ResponseInterface as Response6Interface;
 
 class Parser
 {
@@ -40,13 +41,13 @@ class Parser
     ];
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return string
      *
      * @throws CommunicationException
      */
-    public static function getRawResponseBody(ResponseInterface $response)
+    public static function getRawResponseBody($response)
     {
         $statusCode = $response->getStatusCode();
         $rawResponse = $response->getBody()->getContents();
@@ -82,25 +83,25 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Credit
      *
      * @throws CommunicationException
      */
-    public static function prepareCredit(ResponseInterface $response)
+    public static function prepareCredit($response)
     {
         return new Credit(static::getRawResponseBody($response));
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
      *
      * @throws CommunicationException
      */
-    public static function prepareSendResponse(ResponseInterface $response)
+    public static function prepareSendResponse($response)
     {
         $body = static::getRawResponseBody($response);
         $decoded = json_decode($body, true);
@@ -121,13 +122,13 @@ class Parser
 
     /**
      * @param int[] $opiloIds
-     * @param $response
+     * @param ResponseInterface|Response6Interface$response
      *
      * @return status[]
      *
      * @throws CommunicationException
      */
-    public static function prepareStatusArray($opiloIds, ResponseInterface $response)
+    public static function prepareStatusArray($opiloIds, $response)
     {
         $body = static::getRawResponseBody($response);
         $decoded = json_decode($body, true);
@@ -153,13 +154,13 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Inbox
      *
      * @throws CommunicationException
      */
-    public static function prepareInbox(ResponseInterface $response)
+    public static function prepareInbox($response)
     {
         $body = static::getRawResponseBody($response);
 

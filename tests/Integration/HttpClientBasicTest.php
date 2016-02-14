@@ -24,6 +24,7 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
     }
 

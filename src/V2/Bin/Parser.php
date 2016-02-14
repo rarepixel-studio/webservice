@@ -12,17 +12,18 @@ use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
+use Psr\Http\Message\ResponseInterface as Response6Interface;
 
 class Parser
 {
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return string
      *
      * @throws CommunicationException
      */
-    public static function getRawResponseBody(ResponseInterface $response)
+    public static function getRawResponseBody($response)
     {
         $statusCode = $response->getStatusCode();
         $rawResponse = $response->getBody()->getContents();
@@ -35,7 +36,7 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Status[]
      *
@@ -43,7 +44,7 @@ class Parser
      *
      * @return Credit
      */
-    public static function prepareCredit(ResponseInterface $response)
+    public static function prepareCredit($response)
     {
         $rawResponse = static::getRawResponseBody($response);
         $array = json_decode($rawResponse, true);
@@ -56,13 +57,13 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Inbox
      *
      * @throws CommunicationException
      */
-    public static function prepareIncomingSMS(ResponseInterface $response)
+    public static function prepareIncomingSMS($response)
     {
         $rawResponse = static::getRawResponseBody($response);
 
@@ -120,13 +121,13 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @throws CommunicationException
      *
      * @return Status[]
      */
-    public static function prepareStatusArray(ResponseInterface $response)
+    public static function prepareStatusArray($response)
     {
         $rawResponse = static::getRawResponseBody($response);
 
@@ -134,13 +135,13 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return SendSMSResponse[]
      *
      * @throws CommunicationException
      */
-    public static function prepareSendResponse(ResponseInterface $response)
+    public static function prepareSendResponse($response)
     {
         $rawResponse = static::getRawResponseBody($response);
 

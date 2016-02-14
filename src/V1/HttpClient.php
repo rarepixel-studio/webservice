@@ -3,6 +3,8 @@
 namespace OpiloClient\V1;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
@@ -15,6 +17,9 @@ use OpiloClient\Response\Status;
 use OpiloClient\V1\Bin\Out;
 use OpiloClient\V1\Bin\Parser;
 
+/**
+ * @deprecated
+ */
 class HttpClient
 {
     /**
@@ -27,10 +32,14 @@ class HttpClient
      */
     protected $client;
 
+    private $clientVersion;
+
     public function __construct(ConnectionConfig $config, Account $account)
     {
         $this->client = $config->getHttpClient(ConnectionConfig::VERSION_1);
         $this->account = $account;
+        $version = ClientInterface::VERSION;
+        $this->clientVersion = $version[0];
     }
 
     /**
@@ -38,9 +47,9 @@ class HttpClient
      * @param string|array $to
      * @param string       $text
      *
-     * @return SendError[]|SendSMSResponse[]|SMSId[]
-     *
      * @throws CommunicationException
+     *
+     * @return SendError[]|SendSMSResponse[]|SMSId[]
      */
     public function sendSMS($from, $to, $text)
     {
@@ -49,14 +58,21 @@ class HttpClient
         }
         $to = implode(',', $to);
 
-        $request = $this->client->createRequest('GET', 'httpsend', [
+        $options = [
             'query' => Out::attachAuth($this->account, [
                 'from' => $from,
                 'to'   => $to,
-                'text' => $text, ]),
-            ]
-        );
-        $response = Out::send($this->client, $request);
+                'text' => $text,
+            ]),
+        ];
+
+        if ($this->clientVersion == '5') {
+            $request = $this->client->createRequest('GET', 'httpsend', $options);
+            $response = Out::send($this->client, $request);
+        } else {
+            $request = new Request('GET', 'httpsend');
+            $response = Out::send($this->client, $request, $options);
+        }
 
         return Parser::prepareSendResponse($response);
     }
@@ -68,9 +84,9 @@ class HttpClient
      * @param string|null $number
      * @param int         $count
      *
-     * @return Inbox
-     *
      * @throws CommunicationException
+     *
+     * @return Inbox
      */
     public function checkInbox($fromId = 0, $fromDate = null, $read = 0, $number = null, $count = Inbox::PAGE_LIMIT)
     {
@@ -90,10 +106,18 @@ class HttpClient
         if ($count) {
             $query[$count] = $count;
         }
-        $request = $this->client->createRequest('GET', 'getAllMessages', [
+
+        $options = [
             'query' => Out::attachAuth($this->account, $query),
-        ]);
-        $response = Out::send($this->client, $request);
+        ];
+
+        if ($this->clientVersion == '5') {
+            $request = $this->client->createRequest('GET', 'getAllMessages', $options);
+            $response = Out::send($this->client, $request);
+        } else {
+            $request = new Request('GET', 'getAllMessages');
+            $response = Out::send($this->client, $request, $options);
+        }
 
         return Parser::prepareInbox($response);
     }
@@ -102,7 +126,7 @@ class HttpClient
      * @param int $from  offset from
      * @param int $count
      *
-     * @deprecated
+     * @throws CommunicationException
      *
      * @return Inbox
      */
@@ -115,15 +139,26 @@ class HttpClient
         if ($count) {
             $query['count'] = $count;
         }
-        $request = $this->client->createRequest('GET', 'recieve', [
+
+        $options = [
             'query' => Out::attachAuth($this->account, $query),
-        ]);
-        $response = Out::send($this->client, $request);
+        ];
+
+        if ($this->clientVersion == '5') {
+            $request = $this->client->createRequest('GET', 'recieve', $options);
+            $response = Out::send($this->client, $request);
+        } else {
+            $request = new Request('GET', 'recieve');
+            $response = Out::send($this->client, $request, $options);
+        }
 
         return Parser::prepareInbox($response);
     }
+
     /**
      * @param int|int[] $opiloIds
+     *
+     * @throws CommunicationException
      *
      * @return Status[]
      */
@@ -132,26 +167,40 @@ class HttpClient
         if (!is_array($opiloIds)) {
             $opiloIds = [$opiloIds];
         }
-        $request = $this->client->createRequest('GET', 'getStatus', [
-                'query' => Out::attachAuth($this->account, [
-                    'ids' => $opiloIds,
-                ]), ]);
-        $response = Out::send($this->client, $request);
+
+        $options = [
+            'query' => Out::attachAuth($this->account, ['ids' => $opiloIds]),
+        ];
+
+        if ($this->clientVersion == '5') {
+            $request = $this->client->createRequest('GET', 'getStatus', $options);
+            $response = Out::send($this->client, $request);
+        } else {
+            $request = new Request('GET', 'getStatus');
+            $response = Out::send($this->client, $request, $options);
+        }
 
         return Parser::prepareStatusArray($opiloIds, $response);
     }
 
     /**
-     * @return Credit
-     *
      * @throws CommunicationException
+     *
+     * @return Credit
      */
     public function getCredit()
     {
-        $request = $this->client->createRequest('GET', 'getCredit', [
+        $options = [
             'query' => Out::attachAuth($this->account, []),
-        ]);
-        $response = Out::send($this->client, $request);
+        ];
+
+        if ($this->clientVersion == '5') {
+            $request = $this->client->createRequest('GET', 'getCredit', $options);
+            $response = Out::send($this->client, $request);
+        } else {
+            $request = new Request('GET', 'getCredit');
+            $response = Out::send($this->client, $request, $options);
+        }
 
         return Parser::prepareCredit($response);
     }
