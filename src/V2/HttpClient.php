@@ -4,6 +4,7 @@ namespace OpiloClient\V2;
 
 use DateTime;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
@@ -36,6 +37,8 @@ class HttpClient
     {
         $this->account = $account;
         $this->client = $config->getHttpClient(ConnectionConfig::VERSION_2);
+        $version = ClientInterface::VERSION;
+        $this->clientVersion = $version[0];
     }
 
     /**
