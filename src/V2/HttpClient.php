@@ -35,9 +35,9 @@ class HttpClient
 
     public function __construct(ConnectionConfig $config, Account $account)
     {
-        $this->account       = $account;
-        $this->client        = $config->getHttpClient(ConnectionConfig::VERSION_2);
-        $version             = ClientInterface::VERSION;
+        $this->account = $account;
+        $this->client = $config->getHttpClient(ConnectionConfig::VERSION_2);
+        $version = ClientInterface::VERSION;
         $this->clientVersion = $version[0];
         if (!in_array($this->clientVersion, ['5', '6'])) {
             throw new \Exception('unsupported guzzle version');
@@ -46,8 +46,10 @@ class HttpClient
 
     /**
      * @param OutgoingSMS|OutgoingSMS[] $messages
+     *
      * @throws CommunicationException
      * @throws \Exception
+     *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
      */
     public function sendSMS($messages)
@@ -58,10 +60,10 @@ class HttpClient
 
         $options = Out::attachAuth($this->account, Out::SMSArrayToSendRequestBody($messages));
         if ($this->clientVersion == '5') {
-            $request  = $this->client->createRequest('POST', 'sms/send', ['json' => $options]);
+            $request = $this->client->createRequest('POST', 'sms/send', ['json' => $options]);
             $response = Out::send($this->client, $request);
         } else {
-            $request  = new Request('POST', 'sms/send');
+            $request = new Request('POST', 'sms/send');
             $response = Out::send($this->client, $request, ['query' => $options]);
         }
 
@@ -69,9 +71,9 @@ class HttpClient
     }
 
     /**
-     * @param int $minId
+     * @param int                  $minId
      * @param DateTime|string|null $minReceivedAt
-     * @param string $read
+     * @param string               $read
      *
      * @see Inbox::INBOX_ALL, Inbox::INBOX_READ, Inbox::INBOX_NOT_READ
      *
@@ -109,7 +111,7 @@ class HttpClient
         if ($this->clientVersion == '5') {
             $response = Out::send($this->client, $this->client->createRequest('GET', 'inbox', $options));
         } else {
-            $request  = new Request('GET', 'inbox');
+            $request = new Request('GET', 'inbox');
             $response = Out::send($this->client, $request, $options);
         }
 
@@ -133,7 +135,7 @@ class HttpClient
         if ($this->clientVersion == '5') {
             $response = Out::send($this->client, $this->client->createRequest('GET', 'sms/status', $options));
         } else {
-            $request  = new Request('GET', 'sms/status');
+            $request = new Request('GET', 'sms/status');
             $response = Out::send($this->client, $request, $options);
         }
 
@@ -151,7 +153,7 @@ class HttpClient
         if ($this->clientVersion == '5') {
             $response = Out::send($this->client, $this->client->createRequest('GET', 'credit', $options));
         } else {
-            $request  = new Request('GET', 'credit');
+            $request = new Request('GET', 'credit');
             $response = Out::send($this->client, $request, $options);
         }
 

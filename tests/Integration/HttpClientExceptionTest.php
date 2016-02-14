@@ -2,7 +2,6 @@
 
 namespace OpiloClientTest\Integration;
 
-use GuzzleHttp\ClientInterface;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\OutgoingSMS;
@@ -56,7 +55,7 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testSendInvalidSMS()
     {
-        $client   = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
         $messages = [
             new OutgoingSMS('abcd', getenv('DESTINATION'), 'invalid from'),
             new OutgoingSMS(getenv('PANEL_LINE'), 'abcd', 'invalid to'),

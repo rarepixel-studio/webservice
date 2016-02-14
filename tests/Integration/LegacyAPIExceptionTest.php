@@ -45,7 +45,7 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testMixedValidInvalidToArray()
     {
-        $client   = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
         $response = $client->sendSMS(getenv('PANEL_LINE'), 'junk,' . getenv('DESTINATION'), 'text');
         $this->assertCount(2, $response);
         $this->assertInstanceOf(SendError::class, $response[0]);

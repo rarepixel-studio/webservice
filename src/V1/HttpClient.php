@@ -29,9 +29,9 @@ class HttpClient
 
     public function __construct(ConnectionConfig $config, Account $account)
     {
-        $this->client        = $config->getHttpClient(ConnectionConfig::VERSION_1);
-        $this->account       = $account;
-        $version             = ClientInterface::VERSION;
+        $this->client = $config->getHttpClient(ConnectionConfig::VERSION_1);
+        $this->account = $account;
+        $version = ClientInterface::VERSION;
         $this->clientVersion = $version[0];
         if (!in_array($this->clientVersion, ['5', '6'])) {
             throw new \Exception('unsupported guzzle version');
@@ -39,10 +39,12 @@ class HttpClient
     }
 
     /**
-     * @param string $from
+     * @param string       $from
      * @param string|array $to
-     * @param string $text
+     * @param string       $text
+     *
      * @return \OpiloClient\Response\SendError[]|\OpiloClient\Response\SendSMSResponse[]|\OpiloClient\Response\SMSId[]
+     *
      * @throws CommunicationException
      * @throws \Exception
      */
@@ -62,10 +64,10 @@ class HttpClient
         ];
 
         if ($this->clientVersion == '5') {
-            $request  = $this->client->createRequest('GET', 'httpsend', $options);
+            $request = $this->client->createRequest('GET', 'httpsend', $options);
             $response = Out::send($this->client, $request);
         } else {
-            $request  = new Request('GET', 'httpsend');
+            $request = new Request('GET', 'httpsend');
             $response = Out::send($this->client, $request, $options);
         }
 
@@ -73,12 +75,14 @@ class HttpClient
     }
 
     /**
-     * @param int $fromId
+     * @param int         $fromId
      * @param string|null $fromDate
-     * @param int $read
+     * @param int         $read
      * @param string|null $number
-     * @param int $count
+     * @param int         $count
+     *
      * @return Inbox
+     *
      * @throws CommunicationException
      * @throws \Exception
      */
@@ -106,10 +110,10 @@ class HttpClient
         ];
 
         if ($this->clientVersion == '5') {
-            $request  = $this->client->createRequest('GET', 'getAllMessages', $options);
+            $request = $this->client->createRequest('GET', 'getAllMessages', $options);
             $response = Out::send($this->client, $request);
         } else {
-            $request  = new Request('GET', 'getAllMessages');
+            $request = new Request('GET', 'getAllMessages');
             $response = Out::send($this->client, $request, $options);
         }
 
@@ -117,11 +121,14 @@ class HttpClient
     }
 
     /**
-     * @param int $from offset from
+     * @param int $from  offset from
      * @param int $count
+     *
      * @return Inbox
+     *
      * @throws CommunicationException
      * @throws \Exception
+     *
      * @deprecated
      */
     public function receive($from = 0, $count = Inbox::PAGE_LIMIT)
@@ -139,20 +146,21 @@ class HttpClient
         ];
 
         if ($this->clientVersion == '5') {
-            $request  = $this->client->createRequest('GET', 'recieve', $options);
+            $request = $this->client->createRequest('GET', 'recieve', $options);
             $response = Out::send($this->client, $request);
         } else {
-            $request  = new Request('GET', 'recieve');
+            $request = new Request('GET', 'recieve');
             $response = Out::send($this->client, $request, $options);
         }
-
 
         return Parser::prepareInbox($response);
     }
 
     /**
      * @param int|int[] $opiloIds
+     *
      * @return \OpiloClient\Response\Status[]
+     *
      * @throws CommunicationException
      * @throws \Exception
      */
@@ -167,10 +175,10 @@ class HttpClient
         ];
 
         if ($this->clientVersion == '5') {
-            $request  = $this->client->createRequest('GET', 'getStatus', $options);
+            $request = $this->client->createRequest('GET', 'getStatus', $options);
             $response = Out::send($this->client, $request);
         } else {
-            $request  = new Request('GET', 'getStatus');
+            $request = new Request('GET', 'getStatus');
             $response = Out::send($this->client, $request, $options);
         }
 
@@ -179,6 +187,7 @@ class HttpClient
 
     /**
      * @return Credit
+     *
      * @throws CommunicationException
      * @throws \Exception
      */
@@ -189,10 +198,10 @@ class HttpClient
         ];
 
         if ($this->clientVersion == '5') {
-            $request  = $this->client->createRequest('GET', 'getCredit', $options);
+            $request = $this->client->createRequest('GET', 'getCredit', $options);
             $response = Out::send($this->client, $request);
         } else {
-            $request  = new Request('GET', 'getCredit');
+            $request = new Request('GET', 'getCredit');
             $response = Out::send($this->client, $request, $options);
         }
 

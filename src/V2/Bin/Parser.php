@@ -36,7 +36,7 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface|Response6Interface  $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Status[]
      *
@@ -57,7 +57,7 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface|Response6Interface  $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return Inbox
      *
@@ -121,7 +121,7 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface|Response6Interface  $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @throws CommunicationException
      *
@@ -135,7 +135,7 @@ class Parser
     }
 
     /**
-     * @param ResponseInterface|Response6Interface  $response
+     * @param ResponseInterface|Response6Interface $response
      *
      * @return SendSMSResponse[]
      *

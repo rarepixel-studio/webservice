@@ -38,8 +38,8 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
     public function testSendSingleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
-        $message    = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSingleSMS()', null);
-        $response   = $this->client->sendSMS($message);
+        $message = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSingleSMS()', null);
+        $response = $this->client->sendSMS($message);
         $this->assertCount(1, $response);
         $this->assertInstanceOf(SMSId::class, $response[0]);
         $status = $this->client->checkStatus($response[0]->getId());
@@ -54,7 +54,7 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
     public function testSendMultipleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
-        $messages   = [];
+        $messages = [];
         for ($i = 0; $i < 10; $i++) {
             $messages[] = new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendMultipleSMS' . "($i)", $i, new \DateTime("+$i Minutes"));
         }

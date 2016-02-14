@@ -36,8 +36,8 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
     public function testSendSingleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
-        $text       = 'Legacy::testSendSingleSMS()';
-        $response   = $this->client->sendSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), $text);
+        $text = 'Legacy::testSendSingleSMS()';
+        $response = $this->client->sendSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), $text);
         $this->assertCount(1, $response);
         $this->assertInstanceOf(SMSId::class, $response[0]);
         $status = $this->client->checkStatus($response[0]->getId());
@@ -50,8 +50,8 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
     public function testSendMultipleSMS()
     {
         $initCredit = $this->client->getCredit()->getSmsPageCount();
-        $to         = [];
-        $text       = 'legacy::testSendMultipleSMS()';
+        $to = [];
+        $text = 'legacy::testSendMultipleSMS()';
         for ($i = 0; $i < 10; $i++) {
             $to[] = getenv('DESTINATION');
         }

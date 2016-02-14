@@ -15,9 +15,10 @@ use Psr\Http\Message\ResponseInterface as Response6Interface;
 class Out
 {
     /**
-     * @param Client           $client
+     * @param Client                               $client
      * @param RequestInterface | Request6Interface $request
-     * @param array $options
+     * @param array                                $options
+     *
      * @return ResponseInterface | Response6Interface
      *
      * @throws CommunicationException
