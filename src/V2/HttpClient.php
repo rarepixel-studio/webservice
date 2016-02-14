@@ -37,7 +37,8 @@ class HttpClient
     {
         $this->account       = $account;
         $this->client        = $config->getHttpClient(ConnectionConfig::VERSION_2);
-        $this->clientVersion = (string)ClientInterface::VERSION[0];
+        $version             = ClientInterface::VERSION;
+        $this->clientVersion = $version[0];
         if (!in_array($this->clientVersion, ['5', '6'])) {
             throw new \Exception('unsupported guzzle version');
         }

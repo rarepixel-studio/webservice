@@ -27,7 +27,8 @@ class ConnectionConfig
 
     public function getHttpClient($apiVersion = self::VERSION_2)
     {
-        $version = (string)ClientInterface::VERSION[0];
+        $version = ClientInterface::VERSION;
+        $version = $version[0];
         if ($version === '5') {
             return new Client([
                 'base_url' => $this->serverBaseUrl . $this->getVersionSegment($apiVersion),
