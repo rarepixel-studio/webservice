@@ -4,7 +4,6 @@ namespace OpiloClient\V2;
 
 use DateTime;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use OpiloClient\Configs\Account;
 use OpiloClient\Configs\ConnectionConfig;
@@ -37,18 +36,12 @@ class HttpClient
     {
         $this->account = $account;
         $this->client = $config->getHttpClient(ConnectionConfig::VERSION_2);
-        $version = ClientInterface::VERSION;
-        $this->clientVersion = $version[0];
-        if (!in_array($this->clientVersion, ['5', '6'])) {
-            throw new \Exception('unsupported guzzle version');
-        }
     }
 
     /**
      * @param OutgoingSMS|OutgoingSMS[] $messages
      *
      * @throws CommunicationException
-     * @throws \Exception
      *
      * @return SendSMSResponse[]|SMSId[]|SendError[]
      */
@@ -79,9 +72,9 @@ class HttpClient
      *
      * @param string|null $line_number
      *
-     * @return Inbox
-     *
      * @throws CommunicationException
+     *
+     * @return Inbox
      */
     public function checkInbox($minId = 0, $minReceivedAt = null, $read = Inbox::INBOX_ALL, $line_number = null)
     {
