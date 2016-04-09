@@ -2,8 +2,6 @@
 
 namespace OpiloClientTest\Integration;
 
-use OpiloClient\Configs\Account;
-use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\SendError;
@@ -17,7 +15,7 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
     public function test401()
     {
         $this->setExpectedException(CommunicationException::class, 'Authentication Failed', CommunicationException::AUTH_ERROR);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), 'wrong_password'));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), 'wrong_password', getenv('OPILO_URL'));
         $client->getCredit();
     }
 
@@ -27,14 +25,14 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
     public function test403()
     {
         $this->setExpectedException(CommunicationException::class, 'Forbidden [Web-service is disabled]', CommunicationException::FORBIDDEN);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME_WS_DISABLED'), getenv('OPILO_PASSWORD_WS_DISABLED')));
+        $client = new HttpClient(getenv('OPILO_USERNAME_WS_DISABLED'), getenv('OPILO_PASSWORD_WS_DISABLED'), getenv('OPILO_URL'));
         $client->getCredit();
     }
 
     public function test422()
     {
         $this->setExpectedException(ValidationException::class, 'Input Validation Failed', CommunicationException::INVALID_INPUT);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
         $client->checkStatus(['string']);
     }
 
@@ -42,7 +40,7 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
     {
         $failed = false;
         try {
-            $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+            $client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
             $client->checkStatus(['string']);
         } catch (ValidationException $e) {
             $failed = true;
@@ -55,7 +53,7 @@ class HttpClientExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testSendInvalidSMS()
     {
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
         $messages = [
             new OutgoingSMS('abcd', getenv('DESTINATION'), 'invalid from'),
             new OutgoingSMS(getenv('PANEL_LINE'), 'abcd', 'invalid to'),

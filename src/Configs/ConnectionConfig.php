@@ -7,22 +7,24 @@ use GuzzleHttp\ClientInterface;
 
 class ConnectionConfig
 {
+    const DEFAULT_SERVER_BASE_URL = 'http://bpanel.opilo.com';
+
     const VERSION_1 = '1';
     const VERSION_2 = '2';
 
     /**
-     * @var string Server Base URI, e.g. https://bpanel.opilo.com
+     * @var string Server Base URI
      */
     protected $serverBaseUrl;
 
     /**
      * OpiloConnectionConfig constructor.
      *
-     * @param string $serverBaseUrl
+     * @param string|null $serverBaseUrl
      */
-    public function __construct($serverBaseUrl)
+    public function __construct($serverBaseUrl = null)
     {
-        $this->serverBaseUrl = $serverBaseUrl;
+        $this->serverBaseUrl = $serverBaseUrl ?: static::DEFAULT_SERVER_BASE_URL;
     }
 
     public function getHttpClient($apiVersion = self::VERSION_2)
@@ -57,4 +59,5 @@ class ConnectionConfig
 
         return ('/ws/api/v' . $apiVersion . '/');
     }
+
 }

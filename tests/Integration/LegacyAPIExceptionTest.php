@@ -2,8 +2,6 @@
 
 namespace OpiloClientTest\Integration;
 
-use OpiloClient\Configs\Account;
-use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SMSId;
@@ -15,7 +13,7 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
     public function test401()
     {
         $this->setExpectedException(CommunicationException::class, 'Authentication Failed', CommunicationException::AUTH_ERROR);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), 'wrong_password'));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), 'wrong_password', getenv('OPILO_URL'));
         $client->sendSMS('3000', '9130000000', 'text');
     }
 
@@ -25,27 +23,27 @@ class LegacyAPIExceptionTest extends PHPUnit_Framework_TestCase
     public function test403()
     {
         $this->setExpectedException(CommunicationException::class, 'Forbidden [Web-service is disabled]', CommunicationException::FORBIDDEN);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME_WS_DISABLED'), getenv('OPILO_PASSWORD_WS_DISABLED')));
+        $client = new HttpClient(getenv('OPILO_USERNAME_WS_DISABLED'), getenv('OPILO_PASSWORD_WS_DISABLED'), getenv('OPILO_URL'));
         $client->sendSMS('3000', '9130000000', 'text');
     }
 
     public function testInvalidFrom()
     {
         $this->setExpectedException(CommunicationException::class, 'Invalid From', CommunicationException::INVALID_INPUT);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
         $client->sendSMS('asdf', '9130000000', 'text');
     }
 
     public function testInvalidTo()
     {
         $this->setExpectedException(CommunicationException::class, 'Invalid To', CommunicationException::INVALID_INPUT);
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
         $client->sendSMS(getenv('PANEL_LINE'), 'junk', 'text');
     }
 
     public function testMixedValidInvalidToArray()
     {
-        $client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
         $response = $client->sendSMS(getenv('PANEL_LINE'), 'junk,' . getenv('DESTINATION'), 'text');
         $this->assertCount(2, $response);
         $this->assertInstanceOf(SendError::class, $response[0]);

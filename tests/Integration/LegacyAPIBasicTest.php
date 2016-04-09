@@ -2,8 +2,6 @@
 
 namespace OpiloClientTest\Integration;
 
-use OpiloClient\Configs\Account;
-use OpiloClient\Configs\ConnectionConfig;
 use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\Credit;
 use OpiloClient\Response\Inbox;
@@ -23,7 +21,7 @@ class LegacyAPIBasicTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->client = new HttpClient(new ConnectionConfig(getenv('OPILO_URL')), new Account(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD')));
+        $this->client = new HttpClient(getenv('OPILO_USERNAME'), getenv('OPILO_PASSWORD'), getenv('OPILO_URL'));
     }
 
     public function testGetCredit()
