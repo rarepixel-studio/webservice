@@ -59,5 +59,4 @@ class ConnectionConfig
 
         return ('/ws/api/v' . $apiVersion . '/');
     }
-
 }

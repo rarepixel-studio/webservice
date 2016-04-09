@@ -34,8 +34,8 @@ class HttpClient
     private $clientVersion;
 
     /**
-     * @param string $username
-     * @param string $password
+     * @param string             $username
+     * @param string             $password
      * @param null|string|Client $serverBaseUrl
      */
     public function __construct($username, $password, $serverBaseUrl = null)
