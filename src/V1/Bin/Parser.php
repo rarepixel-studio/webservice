@@ -108,6 +108,9 @@ class Parser
         if (is_numeric($body)) {
             $decoded = [$decoded];
         }
+        if (!is_array($decoded)) {
+            throw new CommunicationException("Unprocessable Response: $body", CommunicationException::UNPROCESSABLE_RESPONSE);
+        }
         $output = [];
         foreach ($decoded as $id) {
             if ($id < 10) {
