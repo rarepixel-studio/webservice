@@ -6,11 +6,8 @@ use Illuminate\Support\ServiceProvider;
 
 class OpiloServiceProvider extends ServiceProvider
 {
-
     /**
      * Perform post-registration booting of services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -21,8 +18,6 @@ class OpiloServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {

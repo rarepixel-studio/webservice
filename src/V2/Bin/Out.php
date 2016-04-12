@@ -68,7 +68,7 @@ class Out
             }
 
             $msg = [
-                'to' => $message->getTo(),
+                'to'  => $message->getTo(),
                 'uid' => $message->getUserDefinedId(),
             ];
 

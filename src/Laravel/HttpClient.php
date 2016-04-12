@@ -12,7 +12,8 @@ class HttpClient extends Facade
      *
      * @return string
      */
-    protected static function getFacadeAccessor() {
+    protected static function getFacadeAccessor()
+    {
         return OpiloServiceProvider::class;
     }
 }
