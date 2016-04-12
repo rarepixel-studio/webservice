@@ -6,6 +6,7 @@ use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\Credit;
+use OpiloClient\Response\DuplicateSmsError;
 use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
@@ -47,6 +48,33 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Status::class, $status[0]);
         $finalCredit = $this->client->getCredit()->getSmsPageCount();
         $this->assertLessThanOrEqual(1, $initCredit - $finalCredit);
+    }
+
+    /**
+     * @group duplicate
+     */
+    public function testSendSmsWithDuplicateUidBatch()
+    {
+        $uid = uniqid('app1:');
+        $messages = [
+            new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSmsWithDuplicateUidBatch()', $uid),
+            new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSmsWithDuplicateUidBatch()', $uid),
+        ];
+        $result = $this->client->sendSMS($messages);
+        $this->assertInstanceOf(SMSId::class, $result[0]);
+        $this->assertInstanceOf(DuplicateSmsError::class, $result[1]);
+    }
+
+    /**
+     * @group duplicate
+     */
+    public function testSendSmsWithDuplicateUidSingle()
+    {
+        $uid = uniqid('app2:');
+        $result = $this->client->sendSMS(new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSmsWithDuplicateUidSingle()', $uid));
+        $this->assertInstanceOf(SMSId::class, $result[0]);
+        $result = $this->client->sendSMS(new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSmsWithDuplicateUidSingle()', $uid));
+        $this->assertInstanceOf(DuplicateSmsError::class, $result[0]);
     }
 
     public function testSendMultipleSMS()

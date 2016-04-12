@@ -69,7 +69,7 @@ class Out
 
             $msg = [
                 'to' => $message->getTo(),
-                'id' => $message->getUserDefinedId(),
+                'uid' => $message->getUserDefinedId(),
             ];
 
             if ($array['defaults']['from'] != $message->getFrom()) {
