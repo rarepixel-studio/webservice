@@ -6,7 +6,6 @@ use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Request\OutgoingSMS;
 use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\Credit;
-use OpiloClient\Response\DuplicateSmsError;
 use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\Status;
@@ -62,7 +61,8 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
         ];
         $result = $this->client->sendSMS($messages);
         $this->assertInstanceOf(SMSId::class, $result[0]);
-        $this->assertInstanceOf(DuplicateSmsError::class, $result[1]);
+        $this->assertInstanceOf(SMSId::class, $result[1]);
+        $this->assertTrue($result[1]->isDuplicated());
     }
 
     /**
@@ -74,7 +74,8 @@ class HttpClientBasicTest extends PHPUnit_Framework_TestCase
         $result = $this->client->sendSMS(new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSmsWithDuplicateUidSingle()', $uid));
         $this->assertInstanceOf(SMSId::class, $result[0]);
         $result = $this->client->sendSMS(new OutgoingSMS(getenv('PANEL_LINE'), getenv('DESTINATION'), 'V2::testSendSmsWithDuplicateUidSingle()', $uid));
-        $this->assertInstanceOf(DuplicateSmsError::class, $result[0]);
+        $this->assertInstanceOf(SMSId::class, $result[0]);
+        $this->assertTrue($result[0]->isDuplicated());
     }
 
     public function testSendMultipleSMS()

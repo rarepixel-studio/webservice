@@ -7,7 +7,6 @@ use OpiloClient\Request\IncomingSMS;
 use OpiloClient\Response\CheckStatusResponse;
 use OpiloClient\Response\CommunicationException;
 use OpiloClient\Response\Credit;
-use OpiloClient\Response\DuplicateSmsError;
 use OpiloClient\Response\Inbox;
 use OpiloClient\Response\SendError;
 use OpiloClient\Response\SendSMSResponse;
@@ -172,13 +171,9 @@ class Parser
                     CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
             }
             if (array_key_exists('error', $item)) {
-                if ($item['error'] == SendError::ERROR_DUPLICATE_SMS && array_key_exists('duplicate_id', $item)) {
-                    $prepared[] = new DuplicateSmsError($item['duplicate_id']);
-                } else {
-                    $prepared[] = new SendError($item['error']);
-                }
+                $prepared[] = new SendError($item['error']);
             } elseif (array_key_exists('id', $item)) {
-                $prepared[] = new SMSId($item['id']);
+                $prepared[] = new SMSId($item['id'], array_key_exists('duplicate', $item) ? (bool) $item['duplicate'] : false);
             } else {
                 throw new CommunicationException("Unprocessable Response item: $rawResponse",
                     CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);

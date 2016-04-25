@@ -10,13 +10,20 @@ class SMSId extends SendSMSResponse
     protected $id;
 
     /**
+     * @var bool
+     */
+    protected $duplicate;
+
+    /**
      * OpiloSMSId constructor.
      *
      * @param string|null $id
+     * @param bool $duplicate
      */
-    public function __construct($id)
+    public function __construct($id, $duplicate = false)
     {
         $this->id = $id;
+        $this->duplicate = $duplicate;
     }
 
     /**
@@ -25,5 +32,13 @@ class SMSId extends SendSMSResponse
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDuplicated()
+    {
+        return $this->duplicate;
     }
 }

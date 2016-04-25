@@ -12,8 +12,6 @@ class SendError extends SendSMSResponse
 
     const ERROR_GENERAL = 8;
 
-    const ERROR_DUPLICATE_SMS = 10;
-
     /**
      * @var int
      */
