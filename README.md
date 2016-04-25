@@ -28,7 +28,7 @@ $response = $client->sendSMS($messages);
 ### User defined ids
 In case of network errors, you may resend your SMS to be sure it is delivered to the Opilo server, but you don't want it to be sent to the target more than once.
 To prevent duplicate SMSes you can set unique strings as uid fields of the `OutgoingSMS` objects.
-In case of receiving a SMS with a duplicate uid, the Opilo server drops that SMS and sends a `DuplicateSmsError` response.
+In case of receiving a SMS with a duplicate uid, the Opilo server drops that SMS and return an SMSId object with a boolean `duplicate` flag.
 The duplication of a `uid` is checked only against the messages sent during the last 24 hours.
 
 ```php
@@ -40,14 +40,10 @@ $messages = [
 ```php
 use OpiloClient\Response\SMSId;
 use OpiloClient\Response\SendError;
-use OpiloClient\Response\DuplicateSmsError;
 ...
 for ($i = 0; $i < count($response); $i++) {
     if ($response[$i] instanceof SMSId) {
         //store $response[$i]->id as the id of $messages[$i] in your database and schedule for checking status if needed
-    } elseif ($response[$i] instanceof DuplicateSmsError) {
-        // You provided a duplicate user defined id (uid) in OutgoingSMS.
-        // Refer to documentations for more information about user defined ids.
     } elseif ($response[$i] instanceof SendError) {
         //It could be that you run out of credit, the line number is invalid, or the receiver number is invalid.
         //To find out more examine $response[$i]->error and compare it against constants in SendError class
