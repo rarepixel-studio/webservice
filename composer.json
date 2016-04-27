@@ -1,7 +1,7 @@
 {
     "name": "opilo/webservice",
     "description": "This is a client of Opilo (www.opilo.com) Web Service",
-    "keywords": ["Opilo", "SMS", "Messaging", "Web Service"],
+    "keywords": ["Opilo", "SMS", "Laravel SMS Driver", "Messaging", "Web Service"],
     "authors": [
         {
             "name": "Hamid Alaei",
