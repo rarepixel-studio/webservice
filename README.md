@@ -1,7 +1,16 @@
 # Webservice Client for opilo.com panel
 
-In order to send and receive SMS via opilo.com panel, you should first create an instance object of class OpiloClient\V2\HttpClient.
+## Usage
+
+First, install the `opilo/webservice` package through [Composer PHP dependency manager](https://getcomposer.org/):
+
+    composer require opilo/webservice
+
+**Note**: if you like to know more about composer, please visit [https://getcomposer.org/](https://getcomposer.org/).
+
+After installing the composer package, in order to send and receive SMS via opilo.com panel, you should create an instance object of class OpiloClient\V2\HttpClient.
 For that, first you need to configure your webservice in [the configuration page](http://bpanel.opilo.com/api).
+
 ## Create a Client Object
 ```php
 use OpiloClient\V2\HttpClient;
