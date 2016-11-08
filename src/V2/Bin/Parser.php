@@ -78,12 +78,12 @@ class Parser
         $prepared = [];
 
         foreach ($array as $id => $item) {
-            if (!is_array($item) || !array_key_exists('from', $item) || !array_key_exists('to', $item) ||
+            if (!is_array($item) || !array_key_exists('id', $item) || !array_key_exists('from', $item) || !array_key_exists('to', $item) ||
                 !array_key_exists('text', $item) || !array_key_exists('received_at', $item)) {
                 throw new CommunicationException("Unprocessable Response item: $rawResponse",
                     CommunicationException::UNPROCESSABLE_RESPONSE_ITEM);
             }
-            $prepared[] = new IncomingSMS($id, $item['from'], $item['to'], $item['text'],
+            $prepared[] = new IncomingSMS($item['id'], $item['from'], $item['to'], $item['text'],
                 \DateTime::createFromFormat('Y-m-d H:i:s', $item['received_at']));
         }
 

@@ -91,13 +91,15 @@ class HttpClientTest extends PHPUnit_Framework_TestCase
         // Mock a Guzzle client to be used
         $responseArray = [
             'messages' => [
-                12345 => [
+                [
+                    'id'          => 12345,
                     'from'        => '9121231234',
                     'to'          => '9123214321',
                     'text'        => 'سلام دوست عزیز',
                     'received_at' => '2016-03-15 14:27:30',
                 ],
-                54321 => [
+                [
+                    'id'          => 54321,
                     'from'        => '9123214321',
                     'to'          => '9121231234',
                     'text'        => 'Hello mate',
